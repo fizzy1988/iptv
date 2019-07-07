@@ -16,8 +16,8 @@
 
 #include <common/libev/io_child.h>
 
-#include <fastotv/protocol/types.h>
 #include <fastotv/protocol/protocol.h>
+#include <fastotv/protocol/types.h>
 
 #include "base/types.h"
 

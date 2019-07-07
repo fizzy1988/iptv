@@ -25,6 +25,7 @@
 namespace {
 const char kFFmpegUA[] = "Lavf/58.27.103";
 const char kVLC[] = "VLC/3.0.1 LibVLC/3.0.1";
+const char kWinkUA[] = "WINK";
 }  // namespace
 
 namespace iptv_cloud {
@@ -44,6 +45,8 @@ Element* make_src(const InputUri& uri, element_id_t input_id, gint timeout_secs)
       agent = std::string(kVLC);
     } else if (uri.GetUserAgent() == InputUri::FFMPEG) {
       agent = std::string(kFFmpegUA);
+    } else if (uri.GetUserAgent() == InputUri::WINK) {
+      agent = std::string(kWinkUA);
     }
 
     return make_http_src(url.GetUrl(), agent, timeout_secs, input_id);
