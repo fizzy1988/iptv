@@ -33,15 +33,6 @@ SET(BASE_SOURCES
   ${CMAKE_SOURCE_DIR}/src/base/stream_commands.cpp
 )
 
-SET(PROTOCOL_HEADERS
-  ${CMAKE_SOURCE_DIR}/src/protocol/protocol.h
-  ${CMAKE_SOURCE_DIR}/src/protocol/types.h
-)
-SET(PROTOCOL_SOURCES
-  ${CMAKE_SOURCE_DIR}/src/protocol/protocol.cpp
-  ${CMAKE_SOURCE_DIR}/src/protocol/types.cpp
-)
-
 SET(STREAM_COMMANDS_INFO_HEADERS
   ${CMAKE_SOURCE_DIR}/src/stream_commands_info/stop_info.h
   ${CMAKE_SOURCE_DIR}/src/stream_commands_info/restart_info.h
@@ -76,7 +67,6 @@ ADD_SUBDIRECTORY(utils)
 
 SET(STREAMER_COMMON_SOURCES
   ${STREAM_COMMANDS_INFO_HEADERS} ${STREAM_COMMANDS_INFO_SOURCES}
-  ${PROTOCOL_HEADERS} ${PROTOCOL_SOURCES}
   ${BASE_HEADERS} ${BASE_SOURCES}
 )
 SET(STREAMER_COMMON_LIBRARIES

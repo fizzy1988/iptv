@@ -16,8 +16,8 @@
 
 #include <common/libev/io_child.h>
 
-#include "protocol/protocol.h"
-#include "protocol/types.h"
+#include <fastotv/protocol/types.h>
+#include <fastotv/protocol/protocol.h>
 
 #include "base/types.h"
 
@@ -30,14 +30,14 @@ class Child : public common::libev::IoChild {
   enum Type : uint8_t { VOD = 0, STREAM };
 
   typedef common::libev::IoChild base_class;
-  typedef protocol::protocol_client_t client_t;
+  typedef fastotv::protocol::protocol_client_t client_t;
   Child(common::libev::IoLoop* server, Type type);
 
   virtual stream_id_t GetStreamID() const = 0;
   Type GetType() const;
 
-  common::ErrnoError SendStop(protocol::sequance_id_t id) WARN_UNUSED_RESULT;
-  common::ErrnoError SendRestart(protocol::sequance_id_t id) WARN_UNUSED_RESULT;
+  common::ErrnoError SendStop(fastotv::protocol::sequance_id_t id) WARN_UNUSED_RESULT;
+  common::ErrnoError SendRestart(fastotv::protocol::sequance_id_t id) WARN_UNUSED_RESULT;
 
   client_t* GetClient() const;
   void SetClient(client_t* pipe);

@@ -343,7 +343,7 @@ int ProcessSlaveWrapper::SendStopDaemonRequest(const std::string& license) {
     return EXIT_FAILURE;
   }
 
-  const protocol::request_t req = StopServiceRequest(common::protocols::json_rpc::MakeRequestID(0), stop_str);
+  const fastotv::protocol::request_t req = StopServiceRequest(common::protocols::json_rpc::MakeRequestID(0), stop_str);
   const common::net::HostAndPort host = Config::GetDefaultHost();
   common::net::socket_info client_info;
   common::ErrnoError err = common::net::connect(host, common::net::ST_SOCK_STREAM, 0, &client_info);
@@ -525,7 +525,7 @@ void ProcessSlaveWrapper::TimerEmited(common::libev::IoLoop* server, common::lib
           continue;
         }
 
-        const protocol::request_t ping_request = PingDaemonRequest(NextRequestID(), ping_server_json);
+        const fastotv::protocol::request_t ping_request = PingDaemonRequest(NextRequestID(), ping_server_json);
         common::ErrnoError err = dclient->WriteRequest(ping_request);
         if (err) {
           DEBUG_MSG_ERROR(err, common::logging::LOG_LEVEL_ERR);
@@ -613,7 +613,7 @@ Child* ProcessSlaveWrapper::FindChildByID(stream_id_t cid) const {
   return nullptr;
 }
 
-void ProcessSlaveWrapper::BroadcastClients(const protocol::request_t& req) {
+void ProcessSlaveWrapper::BroadcastClients(const fastotv::protocol::request_t& req) {
   std::vector<common::libev::IoClient*> clients = loop_->GetClients();
   for (size_t i = 0; i < clients.size(); ++i) {
     ProtocoledDaemonClient* dclient = dynamic_cast<ProtocoledDaemonClient*>(clients[i]);
@@ -635,8 +635,8 @@ common::ErrnoError ProcessSlaveWrapper::DaemonDataReceived(ProtocoledDaemonClien
                  // protocol
   }
 
-  protocol::request_t* req = nullptr;
-  protocol::response_t* resp = nullptr;
+  fastotv::protocol::request_t* req = nullptr;
+  fastotv::protocol::response_t* resp = nullptr;
   common::Error err_parse = common::protocols::json_rpc::ParseJsonRPC(input_command, &req, &resp);
   if (err_parse) {
     const std::string err_str = err_parse->GetDescription();
@@ -674,8 +674,8 @@ common::ErrnoError ProcessSlaveWrapper::PipeDataReceived(pipe::ProtocoledPipeCli
                  // protocol
   }
 
-  protocol::request_t* req = nullptr;
-  protocol::response_t* resp = nullptr;
+  fastotv::protocol::request_t* req = nullptr;
+  fastotv::protocol::response_t* resp = nullptr;
   common::Error err_parse = common::protocols::json_rpc::ParseJsonRPC(input_command, &req, &resp);
   if (err_parse) {
     const std::string err_str = err_parse->GetDescription();
@@ -775,7 +775,7 @@ void ProcessSlaveWrapper::OnHttpRequest(common::libev::http::HttpClient* client,
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopService(ProtocoledDaemonClient* dclient,
-                                                                       protocol::request_t* req) {
+                                                                       fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (req->params) {
     const char* params_ptr = req->params->c_str();
@@ -799,7 +799,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopService(Protocole
 
     if (quit_cleanup_timer_ != INVALID_TIMER_ID) {
       // in progress
-      protocol::response_t resp = StopServiceResponceFail(req->id, "Stop service in progress...");
+      fastotv::protocol::response_t resp = StopServiceResponceFail(req->id, "Stop service in progress...");
       dclient->WriteResponse(resp);
 
       return common::ErrnoError();
@@ -811,7 +811,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopService(Protocole
       channel->SendStop(NextRequestID());
     }
 
-    protocol::response_t resp = StopServiceResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = StopServiceResponceSuccess(req->id);
     dclient->WriteResponse(resp);
 
     quit_cleanup_timer_ = loop_->CreateTimer(cleanup_seconds, false);
@@ -822,7 +822,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopService(Protocole
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleResponcePingService(ProtocoledDaemonClient* dclient,
-                                                                  protocol::response_t* resp) {
+                                                                  fastotv::protocol::response_t* resp) {
   UNUSED(dclient);
   CHECK(loop_->IsLoopThread());
   if (resp->IsMessage()) {
@@ -950,7 +950,7 @@ common::ErrnoError ProcessSlaveWrapper::CreateChildStream(const serialized_strea
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestChangedSourcesStream(pipe::ProtocoledPipeClient* pclient,
-                                                                          protocol::request_t* req) {
+                                                                          fastotv::protocol::request_t* req) {
   UNUSED(pclient);
   CHECK(loop_->IsLoopThread());
   if (req->params) {
@@ -983,7 +983,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestChangedSourcesStream(pipe::
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestStatisticStream(pipe::ProtocoledPipeClient* pclient,
-                                                                     protocol::request_t* req) {
+                                                                     fastotv::protocol::request_t* req) {
   UNUSED(pclient);
   CHECK(loop_->IsLoopThread());
   if (req->params) {
@@ -1016,7 +1016,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestStatisticStream(pipe::Proto
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStartStream(ProtocoledDaemonClient* dclient,
-                                                                       protocol::request_t* req) {
+                                                                       fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1039,12 +1039,12 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStartStream(Protocole
 
     common::ErrnoError err = CreateChildStream(start_info.GetConfig());
     if (err) {
-      protocol::response_t resp = StartStreamResponceFail(req->id, err->GetDescription());
+      fastotv::protocol::response_t resp = StartStreamResponceFail(req->id, err->GetDescription());
       dclient->WriteResponse(resp);
       return err;
     }
 
-    protocol::response_t resp = StartStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = StartStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1052,13 +1052,13 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStartStream(Protocole
   return common::make_errno_error_inval();
 }
 
-protocol::sequance_id_t ProcessSlaveWrapper::NextRequestID() {
-  const protocol::seq_id_t next_id = id_++;
+fastotv::protocol::sequance_id_t ProcessSlaveWrapper::NextRequestID() {
+  const fastotv::protocol::seq_id_t next_id = id_++;
   return common::protocols::json_rpc::MakeRequestID(next_id);
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopStream(ProtocoledDaemonClient* dclient,
-                                                                      protocol::request_t* req) {
+                                                                      fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1081,13 +1081,13 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopStream(Protocoled
 
     Child* chan = FindChildByID(stop_info.GetStreamID());
     if (!chan) {
-      protocol::response_t resp = StopStreamResponceFail(req->id, "Stream not found.");
+      fastotv::protocol::response_t resp = StopStreamResponceFail(req->id, "Stream not found.");
       dclient->WriteResponse(resp);
       return common::ErrnoError();
     }
 
     chan->SendStop(NextRequestID());
-    protocol::response_t resp = StopStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = StopStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1096,7 +1096,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientStopStream(Protocoled
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientRestartStream(ProtocoledDaemonClient* dclient,
-                                                                         protocol::request_t* req) {
+                                                                         fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1119,13 +1119,13 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientRestartStream(Protoco
 
     Child* chan = FindChildByID(restart_info.GetStreamID());
     if (!chan) {
-      protocol::response_t resp = RestartStreamResponceFail(req->id, "Stream not found.");
+      fastotv::protocol::response_t resp = RestartStreamResponceFail(req->id, "Stream not found.");
       dclient->WriteResponse(resp);
       return common::ErrnoError();
     }
 
     chan->SendRestart(NextRequestID());
-    protocol::response_t resp = RestartStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = RestartStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1134,7 +1134,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientRestartStream(Protoco
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogStream(ProtocoledDaemonClient* dclient,
-                                                                        protocol::request_t* req) {
+                                                                        fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1163,7 +1163,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogStream(Protocol
       }
     } else if (remote_log_path.GetScheme() == common::uri::Url::https) {
     }
-    protocol::response_t resp = GetLogStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = GetLogStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1172,7 +1172,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogStream(Protocol
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetPipelineStream(ProtocoledDaemonClient* dclient,
-                                                                             protocol::request_t* req) {
+                                                                             fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1201,7 +1201,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetPipelineStream(Pro
       }
     } else if (remote_log_path.GetScheme() == common::uri::Url::https) {
     }
-    protocol::response_t resp = GetLogStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = GetLogStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1210,7 +1210,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetPipelineStream(Pro
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPrepareService(ProtocoledDaemonClient* dclient,
-                                                                          protocol::request_t* req) {
+                                                                          fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1239,7 +1239,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPrepareService(Protoc
 
     service::Directories dirs(state_info);
     std::string resp_str = service::MakeDirectoryResponce(dirs);
-    protocol::response_t resp = StateServiceResponce(req->id, resp_str);
+    fastotv::protocol::response_t resp = StateServiceResponce(req->id, resp_str);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1248,7 +1248,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPrepareService(Protoc
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientSyncService(ProtocoledDaemonClient* dclient,
-                                                                       protocol::request_t* req) {
+                                                                       fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1286,7 +1286,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientSyncService(Protocole
       }
     }
 
-    protocol::response_t resp = StopStreamResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = StopStreamResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1321,7 +1321,7 @@ void ProcessSlaveWrapper::AddStreamLine(const std::string& config) {
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientActivate(ProtocoledDaemonClient* dclient,
-                                                                    protocol::request_t* req) {
+                                                                    fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (req->params) {
     const char* params_ptr = req->params->c_str();
@@ -1335,20 +1335,20 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientActivate(ProtocoledDa
     json_object_put(jactivate);
     if (err_des) {
       const std::string err_str = err_des->GetDescription();
-      protocol::response_t resp = ActivateResponceFail(req->id, err_str);
+      fastotv::protocol::response_t resp = ActivateResponceFail(req->id, err_str);
       dclient->WriteResponse(resp);
       return common::make_errno_error(err_str, EAGAIN);
     }
 
     bool is_active = activate_info.GetLicense() == license_key_;
     if (!is_active) {
-      protocol::response_t resp = ActivateResponceFail(req->id, "Wrong license key");
+      fastotv::protocol::response_t resp = ActivateResponceFail(req->id, "Wrong license key");
       dclient->WriteResponse(resp);
       return common::make_errno_error_inval();
     }
 
     const std::string node_stats = MakeServiceStats(true);
-    protocol::response_t resp = ActivateResponce(req->id, node_stats);
+    fastotv::protocol::response_t resp = ActivateResponce(req->id, node_stats);
     dclient->WriteResponse(resp);
     dclient->SetVerified(true);
     return common::ErrnoError();
@@ -1358,7 +1358,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientActivate(ProtocoledDa
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPingService(ProtocoledDaemonClient* dclient,
-                                                                       protocol::request_t* req) {
+                                                                       fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1387,7 +1387,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPingService(Protocole
       return common::make_errno_error(err_str, EAGAIN);
     }
 
-    protocol::response_t resp = PingServiceResponce(req->id, ping_server_json);
+    fastotv::protocol::response_t resp = PingServiceResponce(req->id, ping_server_json);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1396,7 +1396,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPingService(Protocole
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogService(ProtocoledDaemonClient* dclient,
-                                                                         protocol::request_t* req) {
+                                                                         fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
@@ -1423,7 +1423,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogService(Protoco
     } else if (remote_log_path.GetScheme() == common::uri::Url::https) {
     }
 
-    protocol::response_t resp = GetLogServiceResponceSuccess(req->id);
+    fastotv::protocol::response_t resp = GetLogServiceResponceSuccess(req->id);
     dclient->WriteResponse(resp);
     return common::ErrnoError();
   }
@@ -1432,7 +1432,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientGetLogService(Protoco
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestServiceCommand(ProtocoledDaemonClient* dclient,
-                                                                    protocol::request_t* req) {
+                                                                    fastotv::protocol::request_t* req) {
   if (req->method == DAEMON_START_STREAM) {
     return HandleRequestClientStartStream(dclient, req);
   } else if (req->method == DAEMON_STOP_STREAM) {
@@ -1462,13 +1462,13 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestServiceCommand(ProtocoledDa
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleResponceServiceCommand(ProtocoledDaemonClient* dclient,
-                                                                     protocol::response_t* resp) {
+                                                                     fastotv::protocol::response_t* resp) {
   CHECK(loop_->IsLoopThread());
   if (!dclient->IsVerified()) {
     return common::make_errno_error_inval();
   }
 
-  protocol::request_t req;
+  fastotv::protocol::request_t req;
   if (dclient->PopRequestByID(resp->id, &req)) {
     if (req.method == DAEMON_SERVER_PING) {
       HandleResponcePingService(dclient, resp);
@@ -1481,7 +1481,7 @@ common::ErrnoError ProcessSlaveWrapper::HandleResponceServiceCommand(ProtocoledD
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleRequestStreamsCommand(pipe::ProtocoledPipeClient* pclient,
-                                                                    protocol::request_t* req) {
+                                                                    fastotv::protocol::request_t* req) {
   if (req->method == CHANGED_SOURCES_STREAM) {
     return HandleRequestChangedSourcesStream(pclient, req);
   } else if (req->method == STATISTIC_STREAM) {
@@ -1493,8 +1493,8 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestStreamsCommand(pipe::Protoc
 }
 
 common::ErrnoError ProcessSlaveWrapper::HandleResponceStreamsCommand(pipe::ProtocoledPipeClient* pclient,
-                                                                     protocol::response_t* resp) {
-  protocol::request_t req;
+                                                                     fastotv::protocol::response_t* resp) {
+  fastotv::protocol::request_t req;
   if (pclient->PopRequestByID(resp->id, &req)) {
     if (req.method == STOP_STREAM) {
     } else if (req.method == RESTART_STREAM) {

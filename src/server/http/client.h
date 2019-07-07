@@ -16,8 +16,6 @@
 
 #include <common/libev/http/http_client.h>
 
-#include "protocol/protocol.h"
-
 namespace iptv_cloud {
 namespace server {
 

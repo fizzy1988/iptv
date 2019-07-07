@@ -16,15 +16,15 @@
 
 #include <common/libev/pipe_client.h>
 
-#include "protocol/protocol.h"
+#include <fastotv/protocol/protocol.h>
 
 namespace iptv_cloud {
 namespace server {
 namespace pipe {
 
-class ProtocoledPipeClient : public protocol::ProtocolClient<common::libev::IoClient> {
+class ProtocoledPipeClient : public fastotv::protocol::ProtocolClient<common::libev::IoClient> {
  public:
-  typedef protocol::ProtocolClient<common::libev::IoClient> base_class;
+  typedef fastotv::protocol::ProtocolClient<common::libev::IoClient> base_class;
   ~ProtocoledPipeClient() override;
 
   const char* ClassName() const override;

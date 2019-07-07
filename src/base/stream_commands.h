@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "protocol/types.h"
+#include <fastotv/protocol/types.h>
 
 #define STOP_STREAM "stop"
 #define RESTART_STREAM "restart"
@@ -24,14 +24,15 @@
 
 namespace iptv_cloud {
 
-protocol::request_t RestartStreamRequest(protocol::sequance_id_t id);
-protocol::response_t RestartStreamResponceSuccess(protocol::sequance_id_t id);
+fastotv::protocol::request_t RestartStreamRequest(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t RestartStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
 
-protocol::request_t StopStreamRequest(protocol::sequance_id_t id);
-protocol::response_t StopStreamResponceSuccess(protocol::sequance_id_t id);
+fastotv::protocol::request_t StopStreamRequest(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t StopStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
 
 // Broadcast
-protocol::request_t ChangedSourcesStreamBroadcast(protocol::serializet_params_t params);  // ChangedSouresInfo
-protocol::request_t StatisticStreamBroadcast(protocol::serializet_params_t params);       // StatisticInfo
+fastotv::protocol::request_t ChangedSourcesStreamBroadcast(
+    fastotv::protocol::serializet_params_t params);  // ChangedSouresInfo
+fastotv::protocol::request_t StatisticStreamBroadcast(fastotv::protocol::serializet_params_t params);  // StatisticInfo
 
 }  // namespace iptv_cloud

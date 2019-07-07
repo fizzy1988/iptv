@@ -21,7 +21,8 @@
 #include <common/libev/io_loop_observer.h>
 #include <common/threads/barrier.h>
 
-#include "protocol/types.h"
+#include <fastotv/protocol/types.h>
+
 #include "stream/ibase_stream.h"
 #include "stream/timeshift.h"
 #include "utils/arg_converter.h"
@@ -44,17 +45,17 @@ class StreamController : public common::libev::IoLoopObserver, public IBaseStrea
 
  protected:
   virtual common::ErrnoError HandleRequestCommand(common::libev::IoClient* client,
-                                                  protocol::request_t* req) WARN_UNUSED_RESULT;
+                                                  fastotv::protocol::request_t* req) WARN_UNUSED_RESULT;
   virtual common::ErrnoError HandleResponceCommand(common::libev::IoClient* client,
-                                                   protocol::response_t* resp) WARN_UNUSED_RESULT;
+                                                   fastotv::protocol::response_t* resp) WARN_UNUSED_RESULT;
 
  private:
-  protocol::sequance_id_t NextRequestID();
+  fastotv::protocol::sequance_id_t NextRequestID();
 
   common::ErrnoError HandleRequestStopStream(common::libev::IoClient* client,
-                                             protocol::request_t* req) WARN_UNUSED_RESULT;
+                                             fastotv::protocol::request_t* req) WARN_UNUSED_RESULT;
   common::ErrnoError HandleRequestRestartStream(common::libev::IoClient* client,
-                                                protocol::request_t* req) WARN_UNUSED_RESULT;
+                                                fastotv::protocol::request_t* req) WARN_UNUSED_RESULT;
 
   void Stop();
   void Restart();
@@ -113,7 +114,7 @@ class StreamController : public common::libev::IoLoopObserver, public IBaseStrea
   //
   IBaseStream* origin_;
 
-  std::atomic<protocol::seq_id_t> id_;
+  std::atomic<fastotv::protocol::seq_id_t> id_;
 };
 
 }  // namespace stream

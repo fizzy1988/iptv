@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include "protocol/types.h"
+#include <fastotv/protocol/types.h>
 
 // daemon
 // client commands
@@ -48,47 +48,57 @@ namespace iptv_cloud {
 namespace server {
 
 // requests
-protocol::request_t StopServiceRequest(protocol::sequance_id_t id,
-                                       protocol::serializet_params_t params);  // StopInfo
-protocol::request_t PingDaemonRequest(protocol::sequance_id_t id,
-                                      protocol::serializet_params_t params);  // ServerPingInfo
+fastotv::protocol::request_t StopServiceRequest(fastotv::protocol::sequance_id_t id,
+                                                fastotv::protocol::serializet_params_t params);  // StopInfo
+fastotv::protocol::request_t PingDaemonRequest(fastotv::protocol::sequance_id_t id,
+                                               fastotv::protocol::serializet_params_t params);  // ServerPingInfo
 
 // responces service
-protocol::response_t StopServiceResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t StopServiceResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t StopServiceResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t StopServiceResponceFail(fastotv::protocol::sequance_id_t id,
+                                                      const std::string& error_text);
 
-protocol::response_t GetLogServiceResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t GetLogServiceResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t GetLogServiceResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t GetLogServiceResponceFail(fastotv::protocol::sequance_id_t id,
+                                                        const std::string& error_text);
 
-protocol::response_t ActivateResponce(protocol::sequance_id_t id, const std::string& result);  // ServerInfo
-protocol::response_t ActivateResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t ActivateResponce(fastotv::protocol::sequance_id_t id,
+                                               const std::string& result);  // ServerInfo
+fastotv::protocol::response_t ActivateResponceFail(fastotv::protocol::sequance_id_t id, const std::string& error_text);
 
-protocol::response_t StateServiceResponce(protocol::sequance_id_t id, const std::string& result);  // Directories
+fastotv::protocol::response_t StateServiceResponce(fastotv::protocol::sequance_id_t id,
+                                                   const std::string& result);  // Directories
 
-protocol::response_t SyncServiceResponceSuccess(protocol::sequance_id_t id);
+fastotv::protocol::response_t SyncServiceResponceSuccess(fastotv::protocol::sequance_id_t id);
 
-protocol::response_t PingServiceResponce(protocol::sequance_id_t id,
-                                         const std::string& result);  // ServerPingInfo
-protocol::response_t PingServiceResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t PingServiceResponce(fastotv::protocol::sequance_id_t id,
+                                                  const std::string& result);  // ServerPingInfo
+fastotv::protocol::response_t PingServiceResponceFail(fastotv::protocol::sequance_id_t id,
+                                                      const std::string& error_text);
 
 // responces streams
-protocol::response_t StartStreamResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t StartStreamResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t StartStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t StartStreamResponceFail(fastotv::protocol::sequance_id_t id,
+                                                      const std::string& error_text);
 
-protocol::response_t StopStreamResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t StopStreamResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t StopStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t StopStreamResponceFail(fastotv::protocol::sequance_id_t id,
+                                                     const std::string& error_text);
 
-protocol::response_t RestartStreamResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t RestartStreamResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t RestartStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t RestartStreamResponceFail(fastotv::protocol::sequance_id_t id,
+                                                        const std::string& error_text);
 
-protocol::response_t GetLogStreamResponceSuccess(protocol::sequance_id_t id);
-protocol::response_t GetLogStreamResponceFail(protocol::sequance_id_t id, const std::string& error_text);
+fastotv::protocol::response_t GetLogStreamResponceSuccess(fastotv::protocol::sequance_id_t id);
+fastotv::protocol::response_t GetLogStreamResponceFail(fastotv::protocol::sequance_id_t id,
+                                                       const std::string& error_text);
 
 // Broadcast
-protocol::request_t ChangedSourcesStreamBroadcast(protocol::serializet_params_t params);  // ChangedSouresInfo
-protocol::request_t StatisitcStreamBroadcast(protocol::serializet_params_t params);       // StatisticInfo
-protocol::request_t StatisitcServiceBroadcast(protocol::serializet_params_t params);      // ServerInfo
-protocol::request_t QuitStatusStreamBroadcast(protocol::serializet_params_t params);      // StatusInfo
+fastotv::protocol::request_t ChangedSourcesStreamBroadcast(
+    fastotv::protocol::serializet_params_t params);  // ChangedSouresInfo
+fastotv::protocol::request_t StatisitcStreamBroadcast(fastotv::protocol::serializet_params_t params);   // StatisticInfo
+fastotv::protocol::request_t StatisitcServiceBroadcast(fastotv::protocol::serializet_params_t params);  // ServerInfo
+fastotv::protocol::request_t QuitStatusStreamBroadcast(fastotv::protocol::serializet_params_t params);  // StatusInfo
 
 }  // namespace server
 }  // namespace iptv_cloud

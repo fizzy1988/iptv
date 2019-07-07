@@ -22,12 +22,12 @@
 #include <common/system_info/system_info.h>
 #include <common/time.h>
 
+#include <fastotv/protocol/protocol.h>
+
 #include "base/config_fields.h"  // for ID_FIELD
 #include "base/constants.h"
 #include "base/gst_constants.h"
 #include "base/stream_commands.h"
-
-#include "protocol/protocol.h"
 
 #include "stream/configs_factory.h"
 #include "stream/ibase_stream.h"
@@ -96,11 +96,11 @@ class StreamServer : public common::libev::IoLoop {
   typedef common::libev::IoLoop base_class;
   explicit StreamServer(common::libev::IoClient* command_client, common::libev::IoLoopObserver* observer = nullptr)
       : base_class(new common::libev::LibEvLoop, observer),
-        command_client_(static_cast<protocol::protocol_client_t*>(command_client)) {
+        command_client_(static_cast<fastotv::protocol::protocol_client_t*>(command_client)) {
     CHECK(command_client);
   }
 
-  void WriteRequest(const protocol::request_t& request) WARN_UNUSED_RESULT {
+  void WriteRequest(const fastotv::protocol::request_t& request) WARN_UNUSED_RESULT {
     auto cb = [this, request] { command_client_->WriteRequest(request); };
     ExecInLoopThread(cb);
   }
@@ -129,7 +129,7 @@ class StreamServer : public common::libev::IoLoop {
   }
 
  private:
-  protocol::protocol_client_t* const command_client_;
+  fastotv::protocol::protocol_client_t* const command_client_;
 };
 
 }  // namespace
@@ -333,15 +333,15 @@ void StreamController::Closed(common::libev::IoClient* client) {
 
 common::ErrnoError StreamController::StreamDataRecived(common::libev::IoClient* client) {
   std::string input_command;
-  protocol::protocol_client_t* pclient = static_cast<protocol::protocol_client_t*>(client);
+  fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
   common::ErrnoError err = pclient->ReadCommand(&input_command);
   if (err) {  // i don't want handle spam, command must be formated according
               // protocol
     return err;
   }
 
-  protocol::request_t* req = nullptr;
-  protocol::response_t* resp = nullptr;
+  fastotv::protocol::request_t* req = nullptr;
+  fastotv::protocol::response_t* resp = nullptr;
   common::Error err_parse = common::protocols::json_rpc::ParseJsonRPC(input_command, &req, &resp);
   if (err_parse) {
     const std::string err_str = err_parse->GetDescription();
@@ -408,7 +408,8 @@ void StreamController::ChildStatusChanged(common::libev::IoChild* child, int sta
   UNUSED(status);
 }
 
-common::ErrnoError StreamController::HandleRequestCommand(common::libev::IoClient* client, protocol::request_t* req) {
+common::ErrnoError StreamController::HandleRequestCommand(common::libev::IoClient* client,
+                                                          fastotv::protocol::request_t* req) {
   if (req->method == STOP_STREAM) {
     return HandleRequestStopStream(client, req);
   } else if (req->method == RESTART_STREAM) {
@@ -420,11 +421,11 @@ common::ErrnoError StreamController::HandleRequestCommand(common::libev::IoClien
 }
 
 common::ErrnoError StreamController::HandleResponceCommand(common::libev::IoClient* client,
-                                                           protocol::response_t* resp) {
+                                                           fastotv::protocol::response_t* resp) {
   CHECK(loop_->IsLoopThread());
 
-  protocol::protocol_client_t* pclient = static_cast<protocol::protocol_client_t*>(client);
-  protocol::request_t req;
+  fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
+  fastotv::protocol::request_t req;
   if (pclient->PopRequestByID(resp->id, &req)) {
     if (req.method == STATISTIC_STREAM) {
     } else if (req.method == CHANGED_SOURCES_STREAM) {
@@ -435,26 +436,26 @@ common::ErrnoError StreamController::HandleResponceCommand(common::libev::IoClie
   return common::ErrnoError();
 }
 
-protocol::sequance_id_t StreamController::NextRequestID() {
-  const protocol::seq_id_t next_id = id_++;
+fastotv::protocol::sequance_id_t StreamController::NextRequestID() {
+  const fastotv::protocol::seq_id_t next_id = id_++;
   return common::protocols::json_rpc::MakeRequestID(next_id);
 }
 
 common::ErrnoError StreamController::HandleRequestStopStream(common::libev::IoClient* client,
-                                                             protocol::request_t* req) {
+                                                             fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
-  protocol::protocol_client_t* pclient = static_cast<protocol::protocol_client_t*>(client);
-  protocol::response_t resp = StopStreamResponceSuccess(req->id);
+  fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
+  fastotv::protocol::response_t resp = StopStreamResponceSuccess(req->id);
   pclient->WriteResponse(resp);
   Stop();
   return common::ErrnoError();
 }
 
 common::ErrnoError StreamController::HandleRequestRestartStream(common::libev::IoClient* client,
-                                                                protocol::request_t* req) {
+                                                                fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
-  protocol::protocol_client_t* pclient = static_cast<protocol::protocol_client_t*>(client);
-  protocol::response_t resp = RestartStreamResponceSuccess(req->id);
+  fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
+  fastotv::protocol::response_t resp = RestartStreamResponceSuccess(req->id);
   pclient->WriteResponse(resp);
   Restart();
   return common::ErrnoError();
@@ -525,7 +526,7 @@ void StreamController::OnInputChanged(const InputUri& uri) {
     return;
   }
 
-  protocol::request_t req = ChangedSourcesStreamBroadcast(changed_json);
+  fastotv::protocol::request_t req = ChangedSourcesStreamBroadcast(changed_json);
   static_cast<StreamServer*>(loop_)->WriteRequest(req);
 }
 
@@ -540,7 +541,7 @@ void StreamController::OnPipelineCreated(IBaseStream* stream) {
 void StreamController::DumpStreamStatus(StreamStruct* stat) {
   std::string status_json;
   if (PrepareStatus(stat, common::system_info::GetCpuLoad(getpid()), &status_json)) {
-    protocol::request_t req = StatisticStreamBroadcast(status_json);
+    fastotv::protocol::request_t req = StatisticStreamBroadcast(status_json);
     static_cast<StreamServer*>(loop_)->WriteRequest(req);
   }
 }

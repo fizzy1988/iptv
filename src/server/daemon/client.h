@@ -16,7 +16,7 @@
 
 #include <common/libev/tcp/tcp_client.h>  // for TcpClient
 
-#include "protocol/protocol.h"
+#include <fastotv/protocol/protocol.h>
 
 namespace iptv_cloud {
 namespace server {
@@ -37,9 +37,9 @@ class DaemonClient : public common::libev::tcp::TcpClient {
   bool is_verified_;
 };
 
-class ProtocoledDaemonClient : public protocol::ProtocolClient<DaemonClient> {
+class ProtocoledDaemonClient : public fastotv::protocol::ProtocolClient<DaemonClient> {
  public:
-  typedef protocol::ProtocolClient<DaemonClient> base_class;
+  typedef fastotv::protocol::ProtocolClient<DaemonClient> base_class;
   ProtocoledDaemonClient(common::libev::IoLoop* server, const common::net::socket_info& info);
 };
 

@@ -16,34 +16,36 @@
 
 namespace iptv_cloud {
 
-protocol::request_t RestartStreamRequest(protocol::sequance_id_t id) {
-  protocol::request_t req;
+fastotv::protocol::request_t RestartStreamRequest(fastotv::protocol::sequance_id_t id) {
+  fastotv::protocol::request_t req;
   req.id = id;
   req.method = RESTART_STREAM;
   return req;
 }
 
-protocol::response_t RestartStreamResponceSuccess(protocol::sequance_id_t id) {
-  return protocol::response_t::MakeMessage(id, common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
+fastotv::protocol::response_t RestartStreamResponceSuccess(fastotv::protocol::sequance_id_t id) {
+  return fastotv::protocol::response_t::MakeMessage(id,
+                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
 }
 
-protocol::request_t StopStreamRequest(protocol::sequance_id_t id) {
-  protocol::request_t req;
+fastotv::protocol::request_t StopStreamRequest(fastotv::protocol::sequance_id_t id) {
+  fastotv::protocol::request_t req;
   req.id = id;
   req.method = STOP_STREAM;
   return req;
 }
 
-protocol::response_t StopStreamResponceSuccess(protocol::sequance_id_t id) {
-  return protocol::response_t::MakeMessage(id, common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
+fastotv::protocol::response_t StopStreamResponceSuccess(fastotv::protocol::sequance_id_t id) {
+  return fastotv::protocol::response_t::MakeMessage(id,
+                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
 }
 
-protocol::request_t ChangedSourcesStreamBroadcast(protocol::serializet_params_t params) {
-  return protocol::request_t::MakeNotification(CHANGED_SOURCES_STREAM, params);
+fastotv::protocol::request_t ChangedSourcesStreamBroadcast(fastotv::protocol::serializet_params_t params) {
+  return fastotv::protocol::request_t::MakeNotification(CHANGED_SOURCES_STREAM, params);
 }
 
-protocol::request_t StatisticStreamBroadcast(protocol::serializet_params_t params) {
-  return protocol::request_t::MakeNotification(STATISTIC_STREAM, params);
+fastotv::protocol::request_t StatisticStreamBroadcast(fastotv::protocol::serializet_params_t params) {
+  return fastotv::protocol::request_t::MakeNotification(STATISTIC_STREAM, params);
 }
 
 }  // namespace iptv_cloud

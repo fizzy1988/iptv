@@ -34,21 +34,21 @@ void Child::SetClient(client_t* pipe) {
   client_ = pipe;
 }
 
-common::ErrnoError Child::SendStop(protocol::sequance_id_t id) {
+common::ErrnoError Child::SendStop(fastotv::protocol::sequance_id_t id) {
   if (!client_) {
     return common::make_errno_error_inval();
   }
 
-  protocol::request_t req = StopStreamRequest(id);
+  fastotv::protocol::request_t req = StopStreamRequest(id);
   return client_->WriteRequest(req);
 }
 
-common::ErrnoError Child::SendRestart(protocol::sequance_id_t id) {
+common::ErrnoError Child::SendRestart(fastotv::protocol::sequance_id_t id) {
   if (!client_) {
     return common::make_errno_error_inval();
   }
 
-  protocol::request_t req = RestartStreamRequest(id);
+  fastotv::protocol::request_t req = RestartStreamRequest(id);
   return client_->WriteRequest(req);
 }
 
