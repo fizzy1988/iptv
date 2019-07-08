@@ -816,6 +816,10 @@ void ProcessSlaveWrapper::OnHttpRequest(common::libev::http::HttpClient* client,
         const serialized_stream_t config = it->second;
         CreateChildStream(config);
       });
+
+      if (!common::file_system::is_file_exist(file.GetPath())) {
+        sleep(3);  // may be fix :)
+      }
     }
   }
 }
