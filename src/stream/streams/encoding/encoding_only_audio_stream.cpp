@@ -24,9 +24,7 @@ namespace iptv_cloud {
 namespace stream {
 namespace streams {
 
-EncodingOnlyAudioStream::EncodingOnlyAudioStream(const EncodeConfig* config,
-                                                 IStreamClient* client,
-                                                 StreamStruct* stats)
+EncodingOnlyAudioStream::EncodingOnlyAudioStream(const EncodeConfig* config, IStreamClient* client, StreamStruct* stats)
     : EncodingStream(config, client, stats) {}
 
 const char* EncodingOnlyAudioStream::ClassName() const {
