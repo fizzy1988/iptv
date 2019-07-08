@@ -818,7 +818,7 @@ void ProcessSlaveWrapper::OnHttpRequest(common::libev::http::HttpClient* client,
       });
 
       if (!common::file_system::is_file_exist(file.GetPath())) {
-        sleep(3);  // may be fix :)
+        sleep(5);  // may be fix :)
       }
     }
   }
