@@ -46,6 +46,8 @@ enum StreamType : uint8_t {
   TEST_LIFE = 6,
   VOD_RELAY = 7,
   VOD_ENCODE = 8,
+  COD_RELAY = 9,
+  COD_ENCODE = 10,
   SCREEN  // for inner use
 };
 

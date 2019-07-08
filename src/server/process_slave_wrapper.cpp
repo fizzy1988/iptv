@@ -262,6 +262,9 @@ common::ErrnoError MakeStreamInfo(const utils::ArgsMap& config_args,
 }  // namespace
 namespace server {
 namespace {
+typedef VodsHandler CodsHandler;
+typedef VodsServer CodsServer;
+
 bool CheckIsFullVod(const common::file_system::ascii_file_string_path& file) {
   utils::M3u8Reader reader;
   if (!reader.Parse(file)) {
@@ -299,12 +302,14 @@ ProcessSlaveWrapper::ProcessSlaveWrapper(const std::string& license_key, const C
       license_key_(license_key),
       process_argc_(0),
       process_argv_(nullptr),
-      loop_(),
-      http_server_(),
+      loop_(nullptr),
+      http_server_(nullptr),
       http_handler_(nullptr),
-      vods_server_(),
+      vods_server_(nullptr),
       vods_handler_(nullptr),
-      subscribers_server_(),
+      cods_server_(nullptr),
+      cods_handler_(nullptr),
+      subscribers_server_(nullptr),
       subscribers_handler_(nullptr),
       id_(0),
       ping_client_timer_(INVALID_TIMER_ID),
@@ -313,7 +318,8 @@ ProcessSlaveWrapper::ProcessSlaveWrapper(const std::string& license_key, const C
       quit_cleanup_timer_(INVALID_TIMER_ID),
       node_stats_(new NodeStats),
       stream_exec_func_(nullptr),
-      vods_links_() {
+      vods_links_(),
+      cods_links_() {
   loop_ = new DaemonServer(config.host, this);
   loop_->SetName("client_server");
 
@@ -324,6 +330,10 @@ ProcessSlaveWrapper::ProcessSlaveWrapper(const std::string& license_key, const C
   vods_handler_ = new VodsHandler(this);
   vods_server_ = new VodsServer(config.vods_host, vods_handler_);
   vods_server_->SetName("vods_server");
+
+  cods_handler_ = new CodsHandler(this);
+  cods_server_ = new CodsServer(config.cods_host, cods_handler_);
+  cods_server_->SetName("cods_server");
 
   finder_ = new SyncFinder;
   subscribers_handler_ = new subscribers::SubscribersHandler(finder_, config.bandwidth_host);
@@ -366,6 +376,8 @@ ProcessSlaveWrapper::~ProcessSlaveWrapper() {
   destroy(&subscribers_server_);
   destroy(&subscribers_handler_);
   destroy(&finder_);
+  destroy(&cods_server_);
+  destroy(&cods_handler_);
   destroy(&vods_server_);
   destroy(&vods_handler_);
   destroy(&http_server_);
@@ -438,6 +450,24 @@ int ProcessSlaveWrapper::Exec(int argc, char** argv) {
     UNUSED(res);
   });
 
+  CodsServer* cods_server = static_cast<CodsServer*>(cods_server_);
+  std::thread cods_thread = std::thread([cods_server] {
+    common::ErrnoError err = cods_server->Bind(true);
+    if (err) {
+      DEBUG_MSG_ERROR(err, common::logging::LOG_LEVEL_ERR);
+      return;
+    }
+
+    err = cods_server->Listen(5);
+    if (err) {
+      DEBUG_MSG_ERROR(err, common::logging::LOG_LEVEL_ERR);
+      return;
+    }
+
+    int res = cods_server->Exec();
+    UNUSED(res);
+  });
+
   subscribers::SubscribersServer* subscribers_server =
       static_cast<subscribers::SubscribersServer*>(subscribers_server_);
   std::thread subscribers_thread = std::thread([subscribers_server] {
@@ -479,6 +509,7 @@ int ProcessSlaveWrapper::Exec(int argc, char** argv) {
 finished:
   subscribers_thread.join();
   vods_thread.join();
+  cods_thread.join();
   http_thread.join();
   if (perf_monitor) {
     perf_monitor->Stop();
@@ -547,6 +578,7 @@ void ProcessSlaveWrapper::TimerEmited(common::libev::IoLoop* server, common::lib
   } else if (quit_cleanup_timer_ == id) {
     subscribers_server_->Stop();
     vods_server_->Stop();
+    cods_server_->Stop();
     http_server_->Stop();
     loop_->Stop();
   }
@@ -769,6 +801,20 @@ void ProcessSlaveWrapper::OnHttpRequest(common::libev::http::HttpClient* client,
           const serialized_stream_t config = it->second;
           CreateChildStream(config);
         }
+      });
+    }
+  } else if (client->GetServer() == cods_server_) {
+    const std::string ext = file.GetExtension();
+    if (common::EqualsASCII(ext, M3U8_EXTENSION, false)) {
+      loop_->ExecInLoopThread([this, file]() {
+        const common::file_system::ascii_directory_string_path http_root(file.GetDirectory());
+        auto it = cods_links_.find(http_root);
+        if (it == cods_links_.end()) {
+          return;
+        }
+
+        const serialized_stream_t config = it->second;
+        CreateChildStream(config);
       });
     }
   }
@@ -1234,8 +1280,11 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientPrepareService(Protoc
     const auto http_root = HttpHandler::http_directory_path_t(state_info.GetHlsDirectory());
     static_cast<HttpHandler*>(http_handler_)->SetHttpRoot(http_root);
 
-    const auto vods_root = VodsHandler::vods_directory_path_t(state_info.GetVodsDirectory());
-    static_cast<VodsHandler*>(vods_handler_)->SetVodsRoot(vods_root);
+    const auto vods_root = VodsHandler::http_directory_path_t(state_info.GetVodsDirectory());
+    static_cast<VodsHandler*>(vods_handler_)->SetHttpRoot(vods_root);
+
+    const auto cods_root = CodsHandler::http_directory_path_t(state_info.GetCodsDirectory());
+    static_cast<CodsHandler*>(cods_handler_)->SetHttpRoot(cods_root);
 
     service::Directories dirs(state_info);
     std::string resp_str = service::MakeDirectoryResponce(dirs);
@@ -1271,6 +1320,12 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientSyncService(Protocole
 
     // refresh vods
     vods_links_.clear();
+    for (const std::string& config : sync_info.GetStreams()) {
+      AddStreamLine(config);
+    }
+
+    // refresh cods
+    cods_links_.clear();
     for (const std::string& config : sync_info.GetStreams()) {
       AddStreamLine(config);
     }
@@ -1314,6 +1369,17 @@ void ProcessSlaveWrapper::AddStreamLine(const std::string& config) {
           const common::file_system::ascii_directory_string_path http_root = out_uri.GetHttpRoot();
           config_args[CLEANUP_TS_FIELD] = common::ConvertToString(false);
           vods_links_[http_root] = config_args;
+        }
+      }
+    }
+  } else if (sha.type == COD_ENCODE || sha.type == COD_RELAY) {
+    output_t output;
+    if (read_output(config_args, &output)) {
+      for (const OutputUri& out_uri : output) {
+        common::uri::Url ouri = out_uri.GetOutput();
+        if (ouri.GetScheme() == common::uri::Url::http) {
+          const common::file_system::ascii_directory_string_path http_root = out_uri.GetHttpRoot();
+          cods_links_[http_root] = config_args;
         }
       }
     }
@@ -1536,13 +1602,14 @@ std::string ProcessSlaveWrapper::MakeServiceStats(bool full_stat) const {
   }
   service::OnlineUsers online(daemons_client_count, static_cast<HttpHandler*>(http_handler_)->GetOnlineClients(),
                               static_cast<HttpHandler*>(vods_handler_)->GetOnlineClients(),
+                              static_cast<HttpHandler*>(cods_handler_)->GetOnlineClients(),
                               static_cast<HttpHandler*>(subscribers_handler_)->GetOnlineClients());
   service::ServerInfo stat(cpu_load * 100, node_stats_->gpu_load, uptime_str, mem_shot, hdd_shot, bytes_recv / ts_diff,
                            bytes_send / ts_diff, sshot, current_time, online);
 
   std::string node_stats;
   if (full_stat) {
-    service::FullServiceInfo fstat(config_.http_host, config_.vods_host, config_.subscribers_host,
+    service::FullServiceInfo fstat(config_.http_host, config_.vods_host, config_.cods_host, config_.subscribers_host,
                                    config_.bandwidth_host, stat);
     common::Error err_ser = fstat.SerializeToString(&node_stats);
     if (err_ser) {

@@ -32,6 +32,7 @@
 #define PREPARE_SERVICE_INFO_CAPTURE_CARD_DIRECTORY_FIELD "capture_card_directory"
 #define PREPARE_SERVICE_INFO_VODS_IN_DIRECTORY_FIELD "vods_in_directory"
 #define PREPARE_SERVICE_INFO_VODS_DIRECTORY_FIELD "vods_directory"
+#define PREPARE_SERVICE_INFO_CODS_DIRECTORY_FIELD "cods_directory"
 
 #define SAVE_DIRECTORY_FIELD_PATH "path"
 #define SAVE_DIRECTORY_FIELD_CONTENT "content"
@@ -78,7 +79,8 @@ PrepareInfo::PrepareInfo()
       dvb_directory_(),
       capture_card_directory_(),
       vods_in_directory_(),
-      vods_directory_() {}
+      vods_directory_(),
+      cods_directory_() {}
 
 std::string PrepareInfo::GetFeedbackDirectory() const {
   return feedback_directory_;
@@ -112,6 +114,10 @@ std::string PrepareInfo::GetVodsDirectory() const {
   return vods_directory_;
 }
 
+std::string PrepareInfo::GetCodsDirectory() const {
+  return cods_directory_;
+}
+
 common::Error PrepareInfo::SerializeFields(json_object* out) const {
   json_object_object_add(out, PREPARE_SERVICE_INFO_FEEDBACK_DIRECTORY_FIELD,
                          json_object_new_string(feedback_directory_.c_str()));
@@ -127,6 +133,8 @@ common::Error PrepareInfo::SerializeFields(json_object* out) const {
                          json_object_new_string(vods_in_directory_.c_str()));
   json_object_object_add(out, PREPARE_SERVICE_INFO_VODS_DIRECTORY_FIELD,
                          json_object_new_string(vods_directory_.c_str()));
+  json_object_object_add(out, PREPARE_SERVICE_INFO_CODS_DIRECTORY_FIELD,
+                         json_object_new_string(cods_directory_.c_str()));
   return common::Error();
 }
 
@@ -224,7 +232,8 @@ Directories::Directories(const PrepareInfo& sinf)
       dvb_dir(sinf.GetDvbDirectory(), PREPARE_SERVICE_INFO_DVB_DIRECTORY_FIELD),
       capture_card_dir(sinf.GetCaptureDirectory(), PREPARE_SERVICE_INFO_CAPTURE_CARD_DIRECTORY_FIELD),
       vods_in_dir(sinf.GetVodsInDirectory(), PREPARE_SERVICE_INFO_VODS_IN_DIRECTORY_FIELD),
-      vods_dir(sinf.GetVodsDirectory(), PREPARE_SERVICE_INFO_VODS_DIRECTORY_FIELD) {
+      vods_dir(sinf.GetVodsDirectory(), PREPARE_SERVICE_INFO_VODS_DIRECTORY_FIELD),
+      cods_dir(sinf.GetCodsDirectory(), PREPARE_SERVICE_INFO_CODS_DIRECTORY_FIELD) {
   vods_in_dir.LoadContent();
 }
 
@@ -238,6 +247,7 @@ std::string MakeDirectoryResponce(const Directories& dirs) {
   json_object_array_add(obj, MakeDirectoryStateResponce(dirs.capture_card_dir));
   json_object_array_add(obj, MakeDirectoryStateResponce(dirs.vods_in_dir));
   json_object_array_add(obj, MakeDirectoryStateResponce(dirs.vods_dir));
+  json_object_array_add(obj, MakeDirectoryStateResponce(dirs.cods_dir));
   std::string obj_str = json_object_get_string(obj);
   json_object_put(obj);
   return obj_str;

@@ -32,6 +32,7 @@ struct Config {
   common::logging::LOG_LEVEL log_level;
   common::net::HostAndPort http_host;
   common::net::HostAndPort vods_host;
+  common::net::HostAndPort cods_host;
   common::net::HostAndPort subscribers_host;
   common::net::HostAndPort bandwidth_host;
   time_t ttl_files_;  // in seconds

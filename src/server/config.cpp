@@ -24,6 +24,7 @@
 #define SERVICE_HOST_FIELD "host"
 #define SERVICE_HTTP_HOST_FIELD "http_host"
 #define SERVICE_VODS_HOST_FIELD "vods_host"
+#define SERVICE_CODS_HOST_FIELD "cods_host"
 #define SERVICE_SUBSCRIBERS_HOST_FIELD "subscribers_host"
 #define SERVICE_BANDWIDTH_HOST_FIELD "bandwidth_host"
 #define SERVICE_TTL_FILES_FIELD "ttl_files"
@@ -58,6 +59,8 @@ common::ErrnoError ReadSlaveConfig(const std::string& path, iptv_cloud::utils::A
     } else if (pair.first == SERVICE_HTTP_HOST_FIELD) {
       options.insert(pair);
     } else if (pair.first == SERVICE_VODS_HOST_FIELD) {
+      options.insert(pair);
+    } else if (pair.first == SERVICE_CODS_HOST_FIELD) {
       options.insert(pair);
     } else if (pair.first == SERVICE_SUBSCRIBERS_HOST_FIELD) {
       options.insert(pair);
@@ -131,6 +134,12 @@ common::ErrnoError load_config_from_file(const std::string& config_absolute_path
     vods_host = common::net::HostAndPort::CreateLocalHost(VODS_PORT);
   }
   lconfig.vods_host = vods_host;
+
+  common::net::HostAndPort cods_host;
+  if (!utils::ArgsGetValue(slave_config_args, SERVICE_CODS_HOST_FIELD, &cods_host)) {
+    cods_host = common::net::HostAndPort::CreateLocalHost(CODS_PORT);
+  }
+  lconfig.cods_host = cods_host;
 
   common::net::HostAndPort subscribers_host;
   if (!utils::ArgsGetValue(slave_config_args, SERVICE_SUBSCRIBERS_HOST_FIELD, &subscribers_host)) {

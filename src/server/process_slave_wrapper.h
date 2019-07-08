@@ -148,10 +148,16 @@ class ProcessSlaveWrapper : public common::libev::IoLoopObserver, public server:
   char** process_argv_;
 
   common::libev::IoLoop* loop_;
+  // http
   common::libev::IoLoop* http_server_;
   common::libev::IoLoopObserver* http_handler_;
+  // vods
   common::libev::IoLoop* vods_server_;
   common::libev::IoLoopObserver* vods_handler_;
+  // cods (channels on demand)
+  common::libev::IoLoop* cods_server_;
+  common::libev::IoLoopObserver* cods_handler_;
+  // subscribers
   common::libev::IoLoop* subscribers_server_;
   common::libev::IoLoopObserver* subscribers_handler_;
 
@@ -164,6 +170,7 @@ class ProcessSlaveWrapper : public common::libev::IoLoopObserver, public server:
   stream_exec_t stream_exec_func_;
 
   std::map<common::file_system::ascii_directory_string_path, serialized_stream_t> vods_links_;
+  std::map<common::file_system::ascii_directory_string_path, serialized_stream_t> cods_links_;
   subscribers::ISubscribeFinder* finder_;
 };
 

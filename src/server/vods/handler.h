@@ -30,10 +30,10 @@ class VodsHandler : public base::IServerHandler {
  public:
   enum { BUF_SIZE = 4096 };
   typedef base::IServerHandler base_class;
-  typedef common::file_system::ascii_directory_string_path vods_directory_path_t;
+  typedef common::file_system::ascii_directory_string_path http_directory_path_t;
   explicit VodsHandler(base::IHttpRequestsObserver* observer);
 
-  void SetVodsRoot(const vods_directory_path_t& vods_root);
+  void SetHttpRoot(const http_directory_path_t& http_root);
 
   void PreLooped(common::libev::IoLoop* server) override;
 
@@ -55,7 +55,7 @@ class VodsHandler : public base::IServerHandler {
  private:
   void ProcessReceived(VodsClient* hclient, const char* request, size_t req_len);
 
-  vods_directory_path_t vods_root_;
+  http_directory_path_t http_root_;
   base::IHttpRequestsObserver* const observer_;
 };
 

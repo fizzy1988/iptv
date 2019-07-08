@@ -38,6 +38,7 @@ class PrepareInfo : public common::serializer::JsonSerializer<PrepareInfo> {
   std::string GetCaptureDirectory() const;
   std::string GetVodsInDirectory() const;
   std::string GetVodsDirectory() const;
+  std::string GetCodsDirectory() const;
 
  protected:
   common::Error DoDeSerialize(json_object* serialized) override;
@@ -52,6 +53,7 @@ class PrepareInfo : public common::serializer::JsonSerializer<PrepareInfo> {
   std::string capture_card_directory_;
   std::string vods_in_directory_;
   std::string vods_directory_;
+  std::string cods_directory_;
 };
 
 struct DirectoryState {
@@ -78,6 +80,7 @@ struct Directories {
   const DirectoryState capture_card_dir;
   DirectoryState vods_in_dir;
   const DirectoryState vods_dir;
+  const DirectoryState cods_dir;
 };
 
 std::string MakeDirectoryResponce(const Directories& dirs);

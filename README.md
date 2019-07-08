@@ -14,6 +14,7 @@ Free IPTV/Video cloud server
 * File Formats
 * Presets
 * Vods server-side support
+* Channels on demand
 * HTTP Live Streaming (HLS) server-side support
 * Public API, client server communication via [JSON RPC](https://www.jsonrpc.org/specification)
 * Protocol gzip compression

@@ -31,7 +31,7 @@ class OnlineUsers : public common::serializer::JsonSerializer<OnlineUsers> {
  public:
   typedef JsonSerializer<OnlineUsers> base_class;
   OnlineUsers();
-  explicit OnlineUsers(size_t daemon, size_t http, size_t vods, size_t subscriber);
+  explicit OnlineUsers(size_t daemon, size_t http, size_t vods, size_t cods, size_t subscriber);
 
  protected:
   common::Error DoDeSerialize(json_object* serialized) override;
@@ -41,6 +41,7 @@ class OnlineUsers : public common::serializer::JsonSerializer<OnlineUsers> {
   size_t daemon_;
   size_t http_;
   size_t vods_;
+  size_t cods_;
   size_t subscriber_;
 };
 
@@ -92,12 +93,14 @@ class FullServiceInfo : public ServerInfo {
   FullServiceInfo();
   explicit FullServiceInfo(const common::net::HostAndPort& http_host,
                            const common::net::HostAndPort& vods_host,
+                           const common::net::HostAndPort& cods_host,
                            const common::net::HostAndPort& subscribers_host,
                            const common::net::HostAndPort& bandwidth_host,
                            const base_class& base);
 
   common::net::HostAndPort GetHttpHost() const;
   common::net::HostAndPort GetVodsHost() const;
+  common::net::HostAndPort GetCodsHost() const;
   common::net::HostAndPort GetSubscribersHost() const;
   common::net::HostAndPort GetBandwidthHost() const;
   std::string GetProjectVersion() const;
@@ -109,6 +112,7 @@ class FullServiceInfo : public ServerInfo {
  private:
   common::net::HostAndPort http_host_;
   common::net::HostAndPort vods_host_;
+  common::net::HostAndPort cods_host_;
   common::net::HostAndPort subscribers_host_;
   common::net::HostAndPort bandwidth_host_;
   std::string proj_ver_;

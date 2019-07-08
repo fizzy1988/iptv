@@ -28,10 +28,10 @@ namespace iptv_cloud {
 namespace server {
 
 VodsHandler::VodsHandler(base::IHttpRequestsObserver* observer)
-    : base_class(), vods_root_(vods_directory_path_t::MakeHomeDir()), observer_(observer) {}
+    : base_class(), http_root_(http_directory_path_t::MakeHomeDir()), observer_(observer) {}
 
-void VodsHandler::SetVodsRoot(const vods_directory_path_t& vods_root) {
-  vods_root_ = vods_root;
+void VodsHandler::SetHttpRoot(const http_directory_path_t& http_root) {
+  http_root_ = http_root;
 }
 
 void VodsHandler::PreLooped(common::libev::IoLoop* server) {
@@ -130,9 +130,9 @@ void VodsHandler::ProcessReceived(VodsClient* hclient, const char* request, size
     }
 
     const std::string url_dirs = path.GetHpath();
-    auto dirs_path = vods_root_.MakeDirectoryStringPath(url_dirs.substr(1));
+    auto dirs_path = http_root_.MakeDirectoryStringPath(url_dirs.substr(1));
     if (!dirs_path) {
-      dirs_path = vods_root_;
+      dirs_path = http_root_;
     }
 
     auto file_path = dirs_path->MakeFileStringPath(path.GetFileName());
