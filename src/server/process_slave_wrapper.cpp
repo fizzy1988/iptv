@@ -1320,11 +1320,6 @@ common::ErrnoError ProcessSlaveWrapper::HandleRequestClientSyncService(Protocole
 
     // refresh vods
     vods_links_.clear();
-    for (const std::string& config : sync_info.GetStreams()) {
-      AddStreamLine(config);
-    }
-
-    // refresh cods
     cods_links_.clear();
     for (const std::string& config : sync_info.GetStreams()) {
       AddStreamLine(config);

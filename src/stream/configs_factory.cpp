@@ -212,7 +212,7 @@ common::Error make_config(const utils::ArgsMap& config_args, Config** config) {
     *config = new streams::AudioVideoConfig(aconf);
     return common::Error();
   } else if (stream_type == RELAY || stream_type == TIMESHIFT_PLAYER || stream_type == TEST_LIFE ||
-             stream_type == VOD_RELAY) {
+             stream_type == VOD_RELAY || stream_type == COD_RELAY) {
     streams::RelayConfig* rconfig = new streams::RelayConfig(aconf);
 
     std::string video_parser;
@@ -236,7 +236,7 @@ common::Error make_config(const utils::ArgsMap& config_args, Config** config) {
 
     *config = rconfig;
     return common::Error();
-  } else if (stream_type == ENCODE || stream_type == VOD_ENCODE) {
+  } else if (stream_type == ENCODE || stream_type == VOD_ENCODE || stream_type == COD_ENCODE) {
     streams::EncodingConfig* econfig = new streams::EncodingConfig(aconf);
     bool relay_audio;
     if (utils::ArgsGetValue(config_args, RELAY_AUDIO_FIELD, &relay_audio)) {

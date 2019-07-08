@@ -25,8 +25,7 @@
 #define DEVICE_INPUT "dev://" DEVICE_VIDEO "?" DEVICE_AUDIO
 
 TEST(InputUri, ConvertFromString) {
-  const std::string invalid_uri_json =
-      "{ \"id\": 0, \"uri\": \"\", \"mute\": false, \"relay_video\": false, \"relay_audio\": false }";
+  const std::string invalid_uri_json = "{ \"id\": 0, \"uri\": \"\", \"user_agent\": 0 }";
   iptv_cloud::InputUri invalid_uri;
   ASSERT_EQ(invalid_uri.GetID(), 0);
   ASSERT_EQ(invalid_uri.GetInput(), common::uri::Url());

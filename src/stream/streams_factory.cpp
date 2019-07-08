@@ -47,7 +47,7 @@ IBaseStream* StreamsFactory::CreateStream(const Config* config,
   if (type == PROXY) {
     NOTREACHED();
     return nullptr;
-  } else if (type == RELAY) {
+  } else if (type == RELAY || type == COD_RELAY) {
     const streams::RelayConfig* rconfig = static_cast<const streams::RelayConfig*>(config);
     if (input.size() > 1) {
       bool is_playlist = true;
@@ -66,7 +66,7 @@ IBaseStream* StreamsFactory::CreateStream(const Config* config,
     }
 
     return new streams::RelayStream(rconfig, client, stats);
-  } else if (type == ENCODE) {
+  } else if (type == ENCODE || type == COD_ENCODE) {
     const streams::EncodingConfig* econfig = static_cast<const streams::EncodingConfig*>(config);
     if (input.size() > 1) {
       bool is_playlist = true;

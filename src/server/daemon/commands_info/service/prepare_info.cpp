@@ -196,6 +196,13 @@ common::Error PrepareInfo::DoDeSerialize(json_object* serialized) {
     inf.vods_directory_ = json_object_get_string(jvods_directory);
   }
 
+  json_object* jcods_directory = nullptr;
+  json_bool jcods_directory_exists =
+      json_object_object_get_ex(serialized, PREPARE_SERVICE_INFO_CODS_DIRECTORY_FIELD, &jcods_directory);
+  if (jcods_directory_exists) {
+    inf.cods_directory_ = json_object_get_string(jcods_directory);
+  }
+
   *this = inf;
   return common::Error();
 }

@@ -23,7 +23,7 @@
 #define HTTP_OUTPUT "/home/sasha/123/"
 
 TEST(OutputUri, ConvertFromString) {
-  const std::string invalid_uri_json = "{ \"id\": 0, \"uri\": \"\", \"http_root\": \"\", \"size\": \"0x0\" }";
+  const std::string invalid_uri_json = "{ \"id\": 0, \"uri\": \"\", \"http_root\": \"\" }";
   iptv_cloud::OutputUri invalid_uri;
   ASSERT_EQ(invalid_uri.GetID(), 0);
   ASSERT_EQ(invalid_uri.GetOutput(), common::uri::Url());
