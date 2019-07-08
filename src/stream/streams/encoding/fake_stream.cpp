@@ -20,7 +20,7 @@ namespace iptv_cloud {
 namespace stream {
 namespace streams {
 
-FakeStream::FakeStream(EncodingConfig* config, IStreamClient* client)
+FakeStream::FakeStream(EncodeConfig* config, IStreamClient* client)
     : EncodingStream(config, client, new StreamStruct(StreamInfo{"fake", ENCODE, {0}, {1}})) {}
 
 const char* FakeStream::ClassName() const {
@@ -43,7 +43,7 @@ void FakeStream::PostLoop(ExitStatus status) {
 }
 
 IBaseBuilder* FakeStream::CreateBuilder() {
-  const EncodingConfig* econf = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* econf = static_cast<const EncodeConfig*>(GetConfig());
   return new builders::FakeStreamBuilder(econf, this);
 }
 

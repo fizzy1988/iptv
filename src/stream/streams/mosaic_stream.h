@@ -19,7 +19,7 @@
 #include <gst/gst.h>
 
 #include "stream/ibase_stream.h"
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 
 #include "stream/streams/mosaic_options.h"
 
@@ -50,7 +50,7 @@ class MosaicStream : public IBaseStream {
   friend class builders::MosaicStreamBuilder;
 
  public:
-  MosaicStream(const EncodingConfig* config, IStreamClient* client, StreamStruct* stats);
+  MosaicStream(const EncodeConfig* config, IStreamClient* client, StreamStruct* stats);
   const char* ClassName() const override;
 
  protected:

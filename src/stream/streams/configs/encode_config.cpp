@@ -12,7 +12,7 @@
     along with iptv_cloud.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 
 #include <string>
 
@@ -28,7 +28,7 @@ namespace iptv_cloud {
 namespace stream {
 namespace streams {
 
-EncodingConfig::EncodingConfig(const base_class& config)
+EncodeConfig::EncodeConfig(const base_class& config)
     : base_class(config),
       deinterlace_(),
       frame_rate_(),
@@ -47,63 +47,63 @@ EncodingConfig::EncodingConfig(const base_class& config)
       relay_video_(false),
       relay_audio_(false) {}
 
-bool EncodingConfig::GetRelayVideo() const {
+bool EncodeConfig::GetRelayVideo() const {
   return relay_video_;
 }
 
-void EncodingConfig::SetRelayVideo(bool rv) {
+void EncodeConfig::SetRelayVideo(bool rv) {
   relay_video_ = rv;
 }
 
-bool EncodingConfig::GetRelayAudio() const {
+bool EncodeConfig::GetRelayAudio() const {
   return relay_audio_;
 }
 
-void EncodingConfig::SetRelayAudio(bool ra) {
+void EncodeConfig::SetRelayAudio(bool ra) {
   relay_audio_ = ra;
 }
 
-void EncodingConfig::SetVolume(volume_t volume) {
+void EncodeConfig::SetVolume(volume_t volume) {
   volume_ = volume;
 }
 
-volume_t EncodingConfig::GetVolume() const {
+volume_t EncodeConfig::GetVolume() const {
   return volume_;
 }
 
-frame_rate_t EncodingConfig::GetFramerate() const {
+frame_rate_t EncodeConfig::GetFramerate() const {
   return frame_rate_;
 }
 
-void EncodingConfig::SetFrameRate(frame_rate_t rate) {
+void EncodeConfig::SetFrameRate(frame_rate_t rate) {
   frame_rate_ = rate;
 }
 
-deinterlace_t EncodingConfig::GetDeinterlace() const {
+deinterlace_t EncodeConfig::GetDeinterlace() const {
   return deinterlace_;
 }
 
-void EncodingConfig::SetDeinterlace(deinterlace_t deinterlace) {
+void EncodeConfig::SetDeinterlace(deinterlace_t deinterlace) {
   deinterlace_ = deinterlace;
 }
 
-std::string EncodingConfig::GetVideoEncoder() const {
+std::string EncodeConfig::GetVideoEncoder() const {
   return video_encoder_;
 }
 
-void EncodingConfig::SetVideoEncoder(const std::string& enc) {
+void EncodeConfig::SetVideoEncoder(const std::string& enc) {
   video_encoder_ = enc;
 }
 
-std::string EncodingConfig::GetAudioEncoder() const {
+std::string EncodeConfig::GetAudioEncoder() const {
   return audio_encoder_;
 }
 
-void EncodingConfig::SetAudioEncoder(const std::string& enc) {
+void EncodeConfig::SetAudioEncoder(const std::string& enc) {
   audio_encoder_ = enc;
 }
 
-bool EncodingConfig::IsGpu() const {
+bool EncodeConfig::IsGpu() const {
   const std::string video_enc = GetVideoEncoder();
   EncoderType enc;
   if (GetEncoderType(video_enc, &enc)) {
@@ -113,7 +113,7 @@ bool EncodingConfig::IsGpu() const {
   return false;
 }
 
-bool EncodingConfig::IsMfxGpu() const {
+bool EncodeConfig::IsMfxGpu() const {
   const std::string video_enc = GetVideoEncoder();
   EncoderType enc;
   if (GetEncoderType(video_enc, &enc)) {
@@ -123,75 +123,75 @@ bool EncodingConfig::IsMfxGpu() const {
   return false;
 }
 
-audio_channels_count_t EncodingConfig::GetAudioChannelsCount() const {
+audio_channels_count_t EncodeConfig::GetAudioChannelsCount() const {
   return audio_channels_count_;
 }
 
-void EncodingConfig::SetAudioChannelsCount(audio_channels_count_t channels) {
+void EncodeConfig::SetAudioChannelsCount(audio_channels_count_t channels) {
   audio_channels_count_ = channels;
 }
 
-common::draw::Size EncodingConfig::GetSize() const {
+common::draw::Size EncodeConfig::GetSize() const {
   return size_;
 }
 
-void EncodingConfig::SetSize(common::draw::Size size) {
+void EncodeConfig::SetSize(common::draw::Size size) {
   size_ = size;
 }
 
-bit_rate_t EncodingConfig::GetVideoBitrate() const {
+bit_rate_t EncodeConfig::GetVideoBitrate() const {
   return video_bit_rate_;
 }
 
-void EncodingConfig::SetVideoBitrate(bit_rate_t bitr) {
+void EncodeConfig::SetVideoBitrate(bit_rate_t bitr) {
   video_bit_rate_ = bitr;
 }
 
-bit_rate_t EncodingConfig::GetAudioBitrate() const {
+bit_rate_t EncodeConfig::GetAudioBitrate() const {
   return audio_bit_rate_;
 }
 
-void EncodingConfig::SetAudioBitrate(bit_rate_t bitr) {
+void EncodeConfig::SetAudioBitrate(bit_rate_t bitr) {
   audio_bit_rate_ = bitr;
 }
 
-video_encoders_args_t EncodingConfig::GetVideoEncoderArgs() const {
+video_encoders_args_t EncodeConfig::GetVideoEncoderArgs() const {
   return video_encoder_args_;
 }
 
-void EncodingConfig::SetVideoEncoderArgs(const video_encoders_args_t& args) {
+void EncodeConfig::SetVideoEncoderArgs(const video_encoders_args_t& args) {
   video_encoder_args_ = args;
 }
 
-video_encoders_str_args_t EncodingConfig::GetVideoEncoderStrArgs() const {
+video_encoders_str_args_t EncodeConfig::GetVideoEncoderStrArgs() const {
   return video_encoder_str_args_;
 }
 
-void EncodingConfig::SetVideoEncoderStrArgs(const video_encoders_str_args_t& args) {
+void EncodeConfig::SetVideoEncoderStrArgs(const video_encoders_str_args_t& args) {
   video_encoder_str_args_ = args;
 }
 
-void EncodingConfig::SetLogo(const Logo& logo) {
+void EncodeConfig::SetLogo(const Logo& logo) {
   logo_ = logo;
 }
 
-Logo EncodingConfig::GetLogo() const {
+Logo EncodeConfig::GetLogo() const {
   return logo_;
 }
 
-rational_t EncodingConfig::GetAspectRatio() const {
+rational_t EncodeConfig::GetAspectRatio() const {
   return aspect_ratio_;
 }
 
-void EncodingConfig::SetAspectRatio(rational_t rat) {
+void EncodeConfig::SetAspectRatio(rational_t rat) {
   aspect_ratio_ = rat;
 }
 
-decklink_video_mode_t EncodingConfig::GetDecklinkMode() const {
+decklink_video_mode_t EncodeConfig::GetDecklinkMode() const {
   return decklink_video_mode_;
 }
 
-void EncodingConfig::SetDecklinkMode(decklink_video_mode_t decl) {
+void EncodeConfig::SetDecklinkMode(decklink_video_mode_t decl) {
   decklink_video_mode_ = decl;
 }
 

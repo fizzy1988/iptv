@@ -16,7 +16,7 @@
 
 #include "stream/streams/builders/src_decodebin_stream_builder.h"
 
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 
 namespace iptv_cloud {
 namespace stream {
@@ -28,7 +28,7 @@ namespace builders {
 
 class EncodingStreamBuilder : public SrcDecodeStreamBuilder {
  public:
-  EncodingStreamBuilder(const EncodingConfig* api, SrcDecodeBinStream* observer);
+  EncodingStreamBuilder(const EncodeConfig* api, SrcDecodeBinStream* observer);
   Connector BuildPostProc(Connector conn) override;
   Connector BuildConverter(Connector conn) override;
 

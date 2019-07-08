@@ -32,15 +32,15 @@ namespace stream {
 namespace streams {
 
 IBaseBuilder* EncodingStream::CreateBuilder() {
-  const EncodingConfig* econf = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* econf = static_cast<const EncodeConfig*>(GetConfig());
   return new builders::EncodingStreamBuilder(econf, this);
 }
 
-EncodingStream::EncodingStream(const EncodingConfig* config, IStreamClient* client, StreamStruct* stats)
+EncodingStream::EncodingStream(const EncodeConfig* config, IStreamClient* client, StreamStruct* stats)
     : base_class(config, client, stats) {}
 
 const char* EncodingStream::ClassName() const {
-  return "EncodingStream";
+  return GetType() == ENCODE ? "EncodingStream" : "CodEncodeStream";
 }
 
 void EncodingStream::HandleBufferingMessage(GstMessage* message) {
@@ -79,7 +79,7 @@ GstAutoplugSelectResult EncodingStream::HandleAutoplugSelect(GstElement* bin,
     return GST_AUTOPLUG_SELECT_TRY;
   }
 
-  const EncodingConfig* config = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* config = static_cast<const EncodeConfig*>(GetConfig());
   gpointer plug_feature = GST_PLUGIN_FEATURE(factory);
   const gchar* factoryName = gst_plugin_feature_get_name(plug_feature);
   bool is_need_to_patch = config->IsAvFormat();
@@ -171,7 +171,7 @@ void EncodingStream::HandleDecodeBinPadAdded(GstElement* src, GstPad* new_pad) {
     return;
   }
 
-  const EncodingConfig* config = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* config = static_cast<const EncodeConfig*>(GetConfig());
   INFO_LOG() << "Pad added: " << new_pad_type;
   elements::Element* dest = nullptr;
   bool is_video = strncmp(new_pad_type, "video", 5) == 0;

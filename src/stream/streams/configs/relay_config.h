@@ -63,6 +63,7 @@ class TimeshiftConfig : public RelayConfig {
 };
 
 typedef RelayConfig PlaylistRelayConfig;
+typedef RelayConfig CodRelayConfig;
 
 }  // namespace streams
 }  // namespace stream

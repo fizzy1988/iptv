@@ -42,13 +42,13 @@ SET(GLOBAL_SOURCES
 
 SET(STREAM_CONFIGS_HEADERS
   ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/relay_config.h
-  ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/encoding_config.h
+  ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/encode_config.h
   ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/audio_video_config.h
 )
 
 SET(STREAM_CONFIGS_SOURCES
   ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/relay_config.cpp
-  ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/encoding_config.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/encode_config.cpp
   ${CMAKE_SOURCE_DIR}/src/stream/streams/configs/audio_video_config.cpp
 )
 

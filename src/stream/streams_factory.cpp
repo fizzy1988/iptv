@@ -67,7 +67,7 @@ IBaseStream* StreamsFactory::CreateStream(const Config* config,
 
     return new streams::RelayStream(rconfig, client, stats);
   } else if (type == ENCODE || type == COD_ENCODE) {
-    const streams::EncodingConfig* econfig = static_cast<const streams::EncodingConfig*>(config);
+    const streams::EncodeConfig* econfig = static_cast<const streams::EncodeConfig*>(config);
     if (input.size() > 1) {
       bool is_playlist = true;
       for (InputUri iuri : input) {

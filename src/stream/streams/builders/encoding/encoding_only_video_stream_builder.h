@@ -23,7 +23,7 @@ namespace builders {
 
 class EncodingOnlyVideoStreamBuilder : public EncodingStreamBuilder {
  public:
-  EncodingOnlyVideoStreamBuilder(const EncodingConfig* api, SrcDecodeBinStream* observer);
+  EncodingOnlyVideoStreamBuilder(const EncodeConfig* api, SrcDecodeBinStream* observer);
 
  protected:
   elements_line_t BuildAudioPostProc(element_id_t audio_id) override;

@@ -29,11 +29,11 @@ namespace stream {
 namespace streams {
 namespace builders {
 
-DeviceStreamBuilder::DeviceStreamBuilder(const EncodingConfig* api, SrcDecodeBinStream* observer)
+DeviceStreamBuilder::DeviceStreamBuilder(const EncodeConfig* api, SrcDecodeBinStream* observer)
     : EncodingStreamBuilder(api, observer) {}
 
 Connector DeviceStreamBuilder::BuildInput() {
-  const EncodingConfig* config = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* config = static_cast<const EncodeConfig*>(GetConfig());
   input_t input = config->GetInput();
   InputUri diuri = input[0];
   common::uri::Url duri = diuri.GetInput();

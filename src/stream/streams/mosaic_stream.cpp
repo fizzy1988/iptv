@@ -276,7 +276,7 @@ void MosaicStream::HandleCairoDraw(GstElement* overlay, cairo_t* cr, guint64 tim
   }
 }
 
-MosaicStream::MosaicStream(const EncodingConfig* config, IStreamClient* client, StreamStruct* stats)
+MosaicStream::MosaicStream(const EncodeConfig* config, IStreamClient* client, StreamStruct* stats)
     : IBaseStream(config, client, stats), options_() {}
 
 const char* MosaicStream::ClassName() const {
@@ -302,7 +302,7 @@ void MosaicStream::OnCairoCreated(elements::video::ElementCairoOverlay* cairo, c
 }
 
 IBaseBuilder* MosaicStream::CreateBuilder() {
-  const EncodingConfig* conf = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* conf = static_cast<const EncodeConfig*>(GetConfig());
   return new builders::MosaicStreamBuilder(conf, this);
 }
 

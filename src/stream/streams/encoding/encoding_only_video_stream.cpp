@@ -24,7 +24,7 @@ namespace iptv_cloud {
 namespace stream {
 namespace streams {
 
-EncodingOnlyVideoStream::EncodingOnlyVideoStream(const EncodingConfig* config,
+EncodingOnlyVideoStream::EncodingOnlyVideoStream(const EncodeConfig* config,
                                                  IStreamClient* client,
                                                  StreamStruct* stats)
     : EncodingStream(config, client, stats) {}
@@ -34,7 +34,7 @@ const char* EncodingOnlyVideoStream::ClassName() const {
 }
 
 IBaseBuilder* EncodingOnlyVideoStream::CreateBuilder() {
-  const EncodingConfig* econf = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* econf = static_cast<const EncodeConfig*>(GetConfig());
   return new builders::EncodingOnlyVideoStreamBuilder(econf, this);
 }
 

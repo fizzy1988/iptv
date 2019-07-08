@@ -23,7 +23,7 @@ namespace stream {
 namespace streams {
 namespace builders {
 
-FakeStreamBuilder::FakeStreamBuilder(const EncodingConfig* api, SrcDecodeBinStream* observer)
+FakeStreamBuilder::FakeStreamBuilder(const EncodeConfig* api, SrcDecodeBinStream* observer)
     : EncodingStreamBuilder(api, observer) {}
 
 Connector FakeStreamBuilder::BuildOutput(Connector conn) {
@@ -31,7 +31,7 @@ Connector FakeStreamBuilder::BuildOutput(Connector conn) {
 }
 
 Connector FakeStreamBuilder::BuildFakeOutput(Connector conn) {
-  const EncodingConfig* config = static_cast<const EncodingConfig*>(GetConfig());
+  const EncodeConfig* config = static_cast<const EncodeConfig*>(GetConfig());
   if (config->HaveVideo()) {
     elements::sink::ElementFakeSink* video = elements::sink::make_fake_sink(0);
     ElementAdd(video);

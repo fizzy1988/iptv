@@ -28,10 +28,10 @@ namespace iptv_cloud {
 namespace stream {
 namespace streams {
 
-class EncodingConfig : public AudioVideoConfig {
+class EncodeConfig : public AudioVideoConfig {
  public:
   typedef AudioVideoConfig base_class;
-  explicit EncodingConfig(const base_class& config);
+  explicit EncodeConfig(const base_class& config);
 
   bool GetRelayVideo() const;
   void SetRelayVideo(bool rv);
@@ -111,9 +111,9 @@ class EncodingConfig : public AudioVideoConfig {
   bool relay_audio_;
 };
 
-class VodEncodeConfig : public EncodingConfig {
+class VodEncodeConfig : public EncodeConfig {
  public:
-  typedef EncodingConfig base_class;
+  typedef EncodeConfig base_class;
   explicit VodEncodeConfig(const base_class& config);
 
   bool GetCleanupTS() const;
@@ -123,7 +123,8 @@ class VodEncodeConfig : public EncodingConfig {
   bool cleanup_ts_;
 };
 
-typedef EncodingConfig PlaylistEncodingConfig;
+typedef EncodeConfig CodEncodeConfig;
+typedef EncodeConfig PlaylistEncodeConfig;
 
 }  // namespace streams
 }  // namespace stream

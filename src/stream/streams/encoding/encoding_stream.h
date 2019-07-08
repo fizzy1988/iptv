@@ -16,7 +16,7 @@
 
 #include "stream/streams/src_decodebin_stream.h"
 
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 
 namespace iptv_cloud {
 namespace stream {
@@ -25,7 +25,7 @@ namespace streams {
 class EncodingStream : public SrcDecodeBinStream {
  public:
   typedef SrcDecodeBinStream base_class;
-  EncodingStream(const EncodingConfig* config, IStreamClient* client, StreamStruct* stats);
+  EncodingStream(const EncodeConfig* config, IStreamClient* client, StreamStruct* stats);
 
   const char* ClassName() const override;
 

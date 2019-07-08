@@ -18,7 +18,7 @@
 
 #include "stream/streams/mosaic_options.h"
 
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 
 namespace iptv_cloud {
 namespace stream {
@@ -37,7 +37,7 @@ class MosaicStream;
 namespace builders {
 class MosaicStreamBuilder : public IBaseBuilder {
  public:
-  MosaicStreamBuilder(const EncodingConfig* config, MosaicStream* observer);
+  MosaicStreamBuilder(const EncodeConfig* config, MosaicStream* observer);
 
  protected:
   void HandleDecodebinCreated(elements::ElementDecodebin* decodebin);

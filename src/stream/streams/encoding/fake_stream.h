@@ -23,7 +23,7 @@ namespace streams {
 class FakeStream : public EncodingStream {
  public:
   typedef EncodingStream base_class;
-  FakeStream(EncodingConfig* config, IStreamClient* client);
+  FakeStream(EncodeConfig* config, IStreamClient* client);
   const char* ClassName() const override;
   ~FakeStream() override;
 

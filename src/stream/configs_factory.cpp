@@ -20,7 +20,7 @@
 #include "base/config_fields.h"
 #include "base/gst_constants.h"
 
-#include "stream/streams/configs/encoding_config.h"
+#include "stream/streams/configs/encode_config.h"
 #include "stream/streams/configs/relay_config.h"
 
 #include "utils/arg_converter.h"
@@ -237,7 +237,7 @@ common::Error make_config(const utils::ArgsMap& config_args, Config** config) {
     *config = rconfig;
     return common::Error();
   } else if (stream_type == ENCODE || stream_type == VOD_ENCODE || stream_type == COD_ENCODE) {
-    streams::EncodingConfig* econfig = new streams::EncodingConfig(aconf);
+    streams::EncodeConfig* econfig = new streams::EncodeConfig(aconf);
     bool relay_audio;
     if (utils::ArgsGetValue(config_args, RELAY_AUDIO_FIELD, &relay_audio)) {
       econfig->SetRelayAudio(relay_audio);
