@@ -162,8 +162,7 @@ StreamController::StreamController(const std::string& feedback_dir,
       ttl_master_timer_(0),
       libev_started_(2),
       mem_(mem),
-      origin_(nullptr),
-      id_(0) {
+      origin_(nullptr) {
   CHECK(mem);
   loop_->SetName("main");
 }
@@ -446,11 +445,6 @@ common::ErrnoError StreamController::HandleResponceCommand(common::libev::IoClie
     }
   }
   return common::ErrnoError();
-}
-
-fastotv::protocol::sequance_id_t StreamController::NextRequestID() {
-  const fastotv::protocol::seq_id_t next_id = id_++;
-  return common::protocols::json_rpc::MakeRequestID(next_id);
 }
 
 common::ErrnoError StreamController::HandleRequestStopStream(common::libev::IoClient* client,

@@ -50,8 +50,6 @@ class StreamController : public common::libev::IoLoopObserver, public IBaseStrea
                                                    fastotv::protocol::response_t* resp) WARN_UNUSED_RESULT;
 
  private:
-  fastotv::protocol::sequance_id_t NextRequestID();
-
   common::ErrnoError HandleRequestStopStream(common::libev::IoClient* client,
                                              fastotv::protocol::request_t* req) WARN_UNUSED_RESULT;
   common::ErrnoError HandleRequestRestartStream(common::libev::IoClient* client,
@@ -113,8 +111,6 @@ class StreamController : public common::libev::IoLoopObserver, public IBaseStrea
 
   //
   IBaseStream* origin_;
-
-  std::atomic<fastotv::protocol::seq_id_t> id_;
 };
 
 }  // namespace stream
