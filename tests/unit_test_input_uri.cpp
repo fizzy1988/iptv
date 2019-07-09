@@ -34,17 +34,14 @@ TEST(InputUri, ConvertFromString) {
   ASSERT_FALSE(err);
   ASSERT_EQ(conv, invalid_uri_json);
 
-  const std::string uri_json = "{ \"id\": 1, \"uri\": \"" RTMP_INPUT
-                               "\", \"volume\": 1.00, \"mute\": false, \"relay_video\": true, \"relay_audio\": false}";
+  const std::string uri_json = "{ \"id\": 1, \"uri\": \"" RTMP_INPUT "\"}";
   iptv_cloud::InputUri uri;
   err = uri.DeSerializeFromString(uri_json);
   ASSERT_FALSE(err);
   ASSERT_EQ(uri.GetID(), 1);
   common::uri::Url ro(RTMP_INPUT);
   ASSERT_EQ(uri.GetInput(), ro);
-  const std::string file_uri_json =
-      "{ \"id\": 2, \"uri\": \"" FILE_INPUT
-      "\", \"volume\": 1.0, \"mute\": false, \"relay_video\": false, \"relay_audio\": true}";
+  const std::string file_uri_json = "{ \"id\": 2, \"uri\": \"" FILE_INPUT "\" }";
   iptv_cloud::InputUri file_uri;
   err = file_uri.DeSerializeFromString(file_uri_json);
   ASSERT_FALSE(err);
@@ -52,9 +49,7 @@ TEST(InputUri, ConvertFromString) {
   common::uri::Url file_ro(FILE_INPUT);
   ASSERT_EQ(file_uri.GetInput(), file_ro);
 
-  const std::string dev_uri_json =
-      "{ \"id\": 2, \"uri\": \"" DEVICE_INPUT
-      "\", \"volume\": 1.00, \"mute\": true, \"relay_video\": true, \"relay_audio\": true}";
+  const std::string dev_uri_json = "{ \"id\": 2, \"uri\": \"" DEVICE_INPUT "\",\"user_agent\": 3 }";
   iptv_cloud::InputUri dev_uri;
   err = dev_uri.DeSerializeFromString(dev_uri_json);
   ASSERT_FALSE(err);
@@ -65,4 +60,5 @@ TEST(InputUri, ConvertFromString) {
   common::uri::Upath dpath = dev_ro.GetPath();
   ASSERT_EQ(dpath.GetPath(), DEVICE_VIDEO);
   ASSERT_EQ(dpath.GetQuery(), DEVICE_AUDIO);
+  ASSERT_EQ(dev_uri.GetUserAgent(), iptv_cloud::InputUri::WINK);
 }

@@ -16,7 +16,6 @@ SET(BASE_HEADERS
   ${CMAKE_SOURCE_DIR}/src/base/inputs_outputs.h
   ${CMAKE_SOURCE_DIR}/src/base/channel_stats.h
   ${CMAKE_SOURCE_DIR}/src/base/stream_struct.h
-  ${CMAKE_SOURCE_DIR}/src/base/stream_commands.h
 )
 
 SET(BASE_SOURCES
@@ -30,22 +29,25 @@ SET(BASE_SOURCES
   ${CMAKE_SOURCE_DIR}/src/base/inputs_outputs.cpp
   ${CMAKE_SOURCE_DIR}/src/base/channel_stats.cpp
   ${CMAKE_SOURCE_DIR}/src/base/stream_struct.cpp
-  ${CMAKE_SOURCE_DIR}/src/base/stream_commands.cpp
 )
 
 SET(STREAM_COMMANDS_INFO_HEADERS
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/stop_info.h
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/restart_info.h
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/changed_sources_info.h
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/statistic_info.h
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/details/channel_stats_info.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_factory.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/stop_info.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/restart_info.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/changed_sources_info.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/statistic_info.h
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/details/channel_stats_info.h
 )
 SET(STREAM_COMMANDS_INFO_SOURCES
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/stop_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/restart_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/changed_sources_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/statistic_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/stream_commands_info/details/channel_stats_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/stop_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/restart_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/changed_sources_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/statistic_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream_commands/commands_info/details/channel_stats_info.cpp
 )
 
 FIND_PACKAGE(Common REQUIRED)

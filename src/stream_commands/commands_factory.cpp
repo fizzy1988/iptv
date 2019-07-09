@@ -12,9 +12,21 @@
     along with iptv_cloud.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/stream_commands.h"
+#include "stream_commands/commands_factory.h"
+
+#include "stream_commands/commands.h"
 
 namespace iptv_cloud {
+
+fastotv::protocol::response_t RestartStreamResponseSuccess(fastotv::protocol::sequance_id_t id) {
+  return fastotv::protocol::response_t::MakeMessage(id,
+                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
+}
+
+fastotv::protocol::response_t StopStreamResponseSuccess(fastotv::protocol::sequance_id_t id) {
+  return fastotv::protocol::response_t::MakeMessage(id,
+                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
+}
 
 fastotv::protocol::request_t RestartStreamRequest(fastotv::protocol::sequance_id_t id) {
   fastotv::protocol::request_t req;
@@ -23,29 +35,11 @@ fastotv::protocol::request_t RestartStreamRequest(fastotv::protocol::sequance_id
   return req;
 }
 
-fastotv::protocol::response_t RestartStreamResponceSuccess(fastotv::protocol::sequance_id_t id) {
-  return fastotv::protocol::response_t::MakeMessage(id,
-                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
-}
-
 fastotv::protocol::request_t StopStreamRequest(fastotv::protocol::sequance_id_t id) {
   fastotv::protocol::request_t req;
   req.id = id;
   req.method = STOP_STREAM;
   return req;
-}
-
-fastotv::protocol::response_t StopStreamResponceSuccess(fastotv::protocol::sequance_id_t id) {
-  return fastotv::protocol::response_t::MakeMessage(id,
-                                                    common::protocols::json_rpc::JsonRPCMessage::MakeSuccessMessage());
-}
-
-fastotv::protocol::request_t ChangedSourcesStreamBroadcast(fastotv::protocol::serializet_params_t params) {
-  return fastotv::protocol::request_t::MakeNotification(CHANGED_SOURCES_STREAM, params);
-}
-
-fastotv::protocol::request_t StatisticStreamBroadcast(fastotv::protocol::serializet_params_t params) {
-  return fastotv::protocol::request_t::MakeNotification(STATISTIC_STREAM, params);
 }
 
 }  // namespace iptv_cloud

@@ -27,18 +27,18 @@
 #include "base/config_fields.h"  // for ID_FIELD
 #include "base/constants.h"
 #include "base/gst_constants.h"
-#include "base/stream_commands.h"
+#include "stream_commands/commands.h"
+#include "stream_commands/commands_factory.h"
 
+#include "stream/commands_factory.h"
 #include "stream/configs_factory.h"
 #include "stream/ibase_stream.h"
 #include "stream/probes.h"
 #include "stream/streams/configs/relay_config.h"
 #include "stream/streams_factory.h"  // for isTimeshiftP...
 
-#include "stream_commands_info/changed_sources_info.h"
-#include "stream_commands_info/restart_info.h"
-#include "stream_commands_info/statistic_info.h"
-#include "stream_commands_info/stop_info.h"
+#include "stream_commands/commands_info/restart_info.h"
+#include "stream_commands/commands_info/stop_info.h"
 
 #include "utils/arg_converter.h"
 
@@ -68,8 +68,8 @@ TimeShiftInfo make_timeshift_info(const utils::ArgsMap& args) {
   return tinfo;
 }
 
-bool PrepareStatus(StreamStruct* stats, double cpu_load, std::string* status_out) {
-  if (!stats || !status_out) {
+bool PrepareStatus(StreamStruct* stats, double cpu_load, StatisticInfo* stat) {
+  if (!stats || !stat) {
     return false;
   }
 
@@ -79,15 +79,7 @@ bool PrepareStatus(StreamStruct* stats, double cpu_load, std::string* status_out
 
   long rss = common::system_info::GetProcessRss(getpid());
   const fastotv::timestamp_t current_time = common::time::current_utc_mstime();
-  StatisticInfo sinf(*stats, cpu_load, rss * 1024, current_time);
-
-  std::string out;
-  common::Error err = sinf.SerializeToString(&out);
-  if (err) {
-    return false;
-  }
-
-  *status_out = out;
+  *stat = StatisticInfo(*stats, cpu_load, rss * 1024, current_time);
   return true;
 }
 
@@ -106,6 +98,26 @@ class StreamServer : public common::libev::IoLoop {
   }
 
   const char* ClassName() const override { return "StreamServer"; }
+
+  void SendChangeSourcesBroadcast(const ChangedSouresInfo& change) WARN_UNUSED_RESULT {
+    fastotv::protocol::request_t req;
+    common::Error err = ChangedSourcesStreamBroadcast(change, &req);
+    if (err) {
+      return;
+    }
+
+    WriteRequest(req);
+  }
+
+  void SendStatisticBroadcast(const StatisticInfo& statistic) WARN_UNUSED_RESULT {
+    fastotv::protocol::request_t req;
+    common::Error err = StatisticStreamBroadcast(statistic, &req);
+    if (err) {
+      return;
+    }
+
+    WriteRequest(req);
+  }
 
   common::libev::IoChild* CreateChild() override {
     NOTREACHED();
@@ -445,7 +457,7 @@ common::ErrnoError StreamController::HandleRequestStopStream(common::libev::IoCl
                                                              fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
-  fastotv::protocol::response_t resp = StopStreamResponceSuccess(req->id);
+  fastotv::protocol::response_t resp = StopStreamResponseSuccess(req->id);
   pclient->WriteResponse(resp);
   Stop();
   return common::ErrnoError();
@@ -455,7 +467,7 @@ common::ErrnoError StreamController::HandleRequestRestartStream(common::libev::I
                                                                 fastotv::protocol::request_t* req) {
   CHECK(loop_->IsLoopThread());
   fastotv::protocol::protocol_client_t* pclient = static_cast<fastotv::protocol::protocol_client_t*>(client);
-  fastotv::protocol::response_t resp = RestartStreamResponceSuccess(req->id);
+  fastotv::protocol::response_t resp = RestartStreamResponseSuccess(req->id);
   pclient->WriteResponse(resp);
   Restart();
   return common::ErrnoError();
@@ -520,14 +532,7 @@ void StreamController::OnSyncMessageReceived(IBaseStream* stream, GstMessage* me
 
 void StreamController::OnInputChanged(const InputUri& uri) {
   ChangedSouresInfo ch(mem_->id, uri);
-  std::string changed_json;
-  common::Error err = ch.SerializeToString(&changed_json);
-  if (err) {
-    return;
-  }
-
-  fastotv::protocol::request_t req = ChangedSourcesStreamBroadcast(changed_json);
-  static_cast<StreamServer*>(loop_)->WriteRequest(req);
+  static_cast<StreamServer*>(loop_)->SendChangeSourcesBroadcast(ch);
 }
 
 void StreamController::OnPipelineCreated(IBaseStream* stream) {
@@ -539,10 +544,9 @@ void StreamController::OnPipelineCreated(IBaseStream* stream) {
 }
 
 void StreamController::DumpStreamStatus(StreamStruct* stat) {
-  std::string status_json;
-  if (PrepareStatus(stat, common::system_info::GetCpuLoad(getpid()), &status_json)) {
-    fastotv::protocol::request_t req = StatisticStreamBroadcast(status_json);
-    static_cast<StreamServer*>(loop_)->WriteRequest(req);
+  StatisticInfo statistic;
+  if (PrepareStatus(stat, common::system_info::GetCpuLoad(getpid()), &statistic)) {
+    static_cast<StreamServer*>(loop_)->SendStatisticBroadcast(statistic);
   }
 }
 

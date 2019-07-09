@@ -12,7 +12,7 @@
     along with iptv_cloud.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stream_commands_info/stop_info.h"
+#include "stream_commands/commands_info/stop_info.h"
 
 namespace iptv_cloud {
 

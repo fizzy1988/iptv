@@ -44,5 +44,4 @@ TEST(OutputUri, ConvertFromString) {
 
   err = uri.SerializeToString(&conv);
   ASSERT_FALSE(err);
-  // ASSERT_EQ(conv, uri_json);
 }

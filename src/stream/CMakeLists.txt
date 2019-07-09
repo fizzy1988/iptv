@@ -1,6 +1,7 @@
 SET(GLOBAL_HEADERS
   ${CMAKE_SOURCE_DIR}/src/stream/gst_types.h
   ${CMAKE_SOURCE_DIR}/src/stream/stypes.h
+  ${CMAKE_SOURCE_DIR}/src/stream/commands_factory.h
 
   ${CMAKE_SOURCE_DIR}/src/stream/ilinker.h
 
@@ -22,6 +23,7 @@ SET(GLOBAL_HEADERS
 SET(GLOBAL_SOURCES
   ${CMAKE_SOURCE_DIR}/src/stream/gst_types.cpp
   ${CMAKE_SOURCE_DIR}/src/stream/stypes.cpp
+  ${CMAKE_SOURCE_DIR}/src/stream/commands_factory.cpp
 
   ${CMAKE_SOURCE_DIR}/src/stream/ilinker.cpp
 

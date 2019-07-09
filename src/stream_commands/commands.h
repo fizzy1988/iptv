@@ -12,22 +12,10 @@
     along with iptv_cloud.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stream_commands_info/restart_info.h"
+#pragma once
 
-namespace iptv_cloud {
+#define STOP_STREAM "stop"
+#define RESTART_STREAM "restart"
 
-RestartInfo::RestartInfo() : base_class() {}
-
-common::Error RestartInfo::SerializeFields(json_object* out) const {
-  UNUSED(out);
-  return common::Error();
-}
-
-common::Error RestartInfo::DoDeSerialize(json_object* serialized) {
-  UNUSED(serialized);
-  RestartInfo inf;
-  *this = inf;
-  return common::Error();
-}
-
-}  // namespace iptv_cloud
+#define CHANGED_SOURCES_STREAM "changed_source_stream"
+#define STATISTIC_STREAM "statistic_stream"

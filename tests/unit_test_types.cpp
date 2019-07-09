@@ -14,7 +14,7 @@
 
 #include <gtest/gtest.h>
 
-#include "stream_commands_info/statistic_info.h"
+#include "stream_commands/commands_info/statistic_info.h"
 
 TEST(StreamStructInfo, SerializeDeSerialize) {
   iptv_cloud::StreamInfo sha;

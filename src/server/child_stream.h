@@ -36,15 +36,19 @@ class Child : public common::libev::IoChild {
   virtual stream_id_t GetStreamID() const = 0;
   Type GetType() const;
 
-  common::ErrnoError SendStop(fastotv::protocol::sequance_id_t id) WARN_UNUSED_RESULT;
-  common::ErrnoError SendRestart(fastotv::protocol::sequance_id_t id) WARN_UNUSED_RESULT;
+  common::ErrnoError Stop() WARN_UNUSED_RESULT;
+  common::ErrnoError Restart() WARN_UNUSED_RESULT;
 
   client_t* GetClient() const;
   void SetClient(client_t* pipe);
 
+ protected:
+  fastotv::protocol::sequance_id_t NextRequestID();
+
  private:
   Type type_;
   client_t* client_;
+  std::atomic<fastotv::protocol::seq_id_t> id_;
 };
 
 class ChildVod : public Child {

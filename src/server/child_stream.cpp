@@ -14,13 +14,14 @@
 
 #include "server/child_stream.h"
 
-#include "base/stream_commands.h"
 #include "base/stream_struct.h"
+
+#include "stream_commands/commands_factory.h"
 
 namespace iptv_cloud {
 namespace server {
 
-Child::Child(common::libev::IoLoop* server, Type type) : base_class(server), type_(type), client_(nullptr) {}
+Child::Child(common::libev::IoLoop* server, Type type) : base_class(server), type_(type), client_(nullptr), id_(0) {}
 
 Child::Type Child::GetType() const {
   return type_;
@@ -34,22 +35,27 @@ void Child::SetClient(client_t* pipe) {
   client_ = pipe;
 }
 
-common::ErrnoError Child::SendStop(fastotv::protocol::sequance_id_t id) {
+common::ErrnoError Child::Stop() {
   if (!client_) {
     return common::make_errno_error_inval();
   }
 
-  fastotv::protocol::request_t req = StopStreamRequest(id);
+  fastotv::protocol::request_t req = StopStreamRequest(NextRequestID());
   return client_->WriteRequest(req);
 }
 
-common::ErrnoError Child::SendRestart(fastotv::protocol::sequance_id_t id) {
+common::ErrnoError Child::Restart() {
   if (!client_) {
     return common::make_errno_error_inval();
   }
 
-  fastotv::protocol::request_t req = RestartStreamRequest(id);
+  fastotv::protocol::request_t req = RestartStreamRequest(NextRequestID());
   return client_->WriteRequest(req);
+}
+
+fastotv::protocol::sequance_id_t Child::NextRequestID() {
+  const fastotv::protocol::seq_id_t next_id = id_++;
+  return common::protocols::json_rpc::MakeRequestID(next_id);
 }
 
 ChildVod::ChildVod(common::libev::IoLoop* server, stream_id_t vid) : base_class(server, VOD), vid_(vid) {}
