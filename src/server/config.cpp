@@ -84,7 +84,7 @@ Config::Config()
     : host(GetDefaultHost()),
       log_path(DUMMY_LOG_FILE_PATH),
       log_level(common::logging::LOG_LEVEL_INFO),
-      ttl_files_(TTL_FILES) {}
+      ttl_files(TTL_FILES) {}
 
 common::net::HostAndPort Config::GetDefaultHost() {
   return common::net::HostAndPort::CreateLocalHost(CLIENT_PORT);
@@ -157,7 +157,7 @@ common::ErrnoError load_config_from_file(const std::string& config_absolute_path
   if (!utils::ArgsGetValue(slave_config_args, SERVICE_TTL_FILES_FIELD, &ttl_files)) {
     ttl_files = TTL_FILES;
   }
-  lconfig.ttl_files_ = ttl_files;
+  lconfig.ttl_files = ttl_files;
 
   *config = lconfig;
   return common::ErrnoError();

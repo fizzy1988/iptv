@@ -509,7 +509,7 @@ finished:
 void ProcessSlaveWrapper::PreLooped(common::libev::IoLoop* server) {
   ping_client_timer_ = server->CreateTimer(ping_timeout_clients_seconds, true);
   node_stats_timer_ = server->CreateTimer(node_stats_send_seconds, true);
-  cleanup_files_timer_ = server->CreateTimer(config_.ttl_files_, true);
+  cleanup_files_timer_ = server->CreateTimer(config_.ttl_files, true);
 }
 
 void ProcessSlaveWrapper::Accepted(common::libev::IoClient* client) {
