@@ -28,17 +28,11 @@
 #include <common/file_system/string_path_utils.h>
 #include <common/net/http_client.h>
 #include <common/net/net.h>
-#include <common/string_util.h>
-#include <common/system_info/system_info.h>
-#include <common/time.h>
 
 #include "base/config_fields.h"
 #include "base/inputs_outputs.h"
-#include "stream_commands/commands.h"
 
-#include "utils/m3u8_reader.h"
-
-#include "stream/stream_wrapper.h"
+#include "gpu_stats/perf_monitor.h"
 
 #include "pipe/pipe_client.h"
 
@@ -46,14 +40,12 @@
 #include "server/daemon/client.h"
 #include "server/daemon/commands.h"
 #include "server/daemon/commands_info/service/activate_info.h"
-#include "server/daemon/commands_info/service/stop_info.h"
-
 #include "server/daemon/commands_info/service/get_log_info.h"
 #include "server/daemon/commands_info/service/prepare_info.h"
 #include "server/daemon/commands_info/service/server_info.h"
+#include "server/daemon/commands_info/service/stop_info.h"
 #include "server/daemon/commands_info/service/sync_info.h"
 #include "server/daemon/commands_info/stream/get_log_info.h"
-#include "server/daemon/commands_info/stream/quit_status_info.h"
 #include "server/daemon/commands_info/stream/restart_info.h"
 #include "server/daemon/commands_info/stream/start_info.h"
 #include "server/daemon/commands_info/stream/stop_info.h"
@@ -68,12 +60,11 @@
 #include "server/vods/handler.h"
 #include "server/vods/server.h"
 
-#include "stream_commands/commands_info/changed_sources_info.h"
-#include "stream_commands/commands_info/statistic_info.h"
-
-#include "gpu_stats/perf_monitor.h"
+#include "stream/stream_wrapper.h"
+#include "stream_commands/commands.h"
 
 #include "utils/arg_converter.h"
+#include "utils/m3u8_reader.h"
 #include "utils/utils.h"
 
 namespace {

@@ -27,18 +27,15 @@
 #include "base/config_fields.h"  // for ID_FIELD
 #include "base/constants.h"
 #include "base/gst_constants.h"
-#include "stream_commands/commands.h"
-#include "stream_commands/commands_factory.h"
 
 #include "stream/commands_factory.h"
 #include "stream/configs_factory.h"
 #include "stream/ibase_stream.h"
-#include "stream/probes.h"
 #include "stream/streams/configs/relay_config.h"
 #include "stream/streams_factory.h"  // for isTimeshiftP...
 
-#include "stream_commands/commands_info/restart_info.h"
-#include "stream_commands/commands_info/stop_info.h"
+#include "stream_commands/commands.h"
+#include "stream_commands/commands_factory.h"
 
 #include "utils/arg_converter.h"
 

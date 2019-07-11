@@ -12,22 +12,44 @@
     along with iptv_cloud.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "server/child_stream.h"
+#pragma once
 
-#include "base/stream_struct.h"
+#include <common/libev/io_child.h>
+
+#include <fastotv/protocol/protocol.h>
+#include <fastotv/protocol/types.h>
+
+#include "base/types.h"
 
 namespace iptv_cloud {
 namespace server {
 
-ChildStream::ChildStream(common::libev::IoLoop* server, StreamStruct* mem) : base_class(server, STREAM), mem_(mem) {}
+class Child : public common::libev::IoChild {
+ public:
+  enum Type : uint8_t { STREAM = 0 };
 
-stream_id_t ChildStream::GetStreamID() const {
-  return mem_->id;
-}
+  typedef common::libev::IoChild base_class;
+  typedef fastotv::protocol::protocol_client_t client_t;
 
-StreamStruct* ChildStream::GetMem() const {
-  return mem_;
-}
+  virtual stream_id_t GetStreamID() const = 0;
+  Type GetType() const;
+
+  common::ErrnoError Stop() WARN_UNUSED_RESULT;
+  common::ErrnoError Restart() WARN_UNUSED_RESULT;
+
+  client_t* GetClient() const;
+  void SetClient(client_t* pipe);
+
+ protected:
+  Child(common::libev::IoLoop* server, Type type);
+
+  fastotv::protocol::sequance_id_t NextRequestID();
+
+ private:
+  Type type_;
+  client_t* client_;
+  std::atomic<fastotv::protocol::seq_id_t> id_;
+};
 
 }  // namespace server
 }  // namespace iptv_cloud

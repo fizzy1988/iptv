@@ -23,8 +23,8 @@
 #include <common/types.h>
 
 #include "base/input_uri.h"
-
 #include "base/stream_struct.h"  // for StreamStatus, StreamStruct (ptr only)
+
 #include "stream/gst_types.h"
 #include "stream/ibase_builder_observer.h"
 

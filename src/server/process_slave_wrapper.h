@@ -23,10 +23,11 @@
 #include <fastotv/protocol/types.h>
 
 #include "base/types.h"
-#include "utils/arg_reader.h"
 
 #include "server/base/ihttp_requests_observer.h"
 #include "server/config.h"
+
+#include "utils/arg_reader.h"
 
 namespace iptv_cloud {
 namespace server {
@@ -149,10 +150,10 @@ class ProcessSlaveWrapper : public common::libev::IoLoopObserver, public server:
   // http
   common::libev::IoLoop* http_server_;
   common::libev::IoLoopObserver* http_handler_;
-  // vods
+  // vods (video on demand)
   common::libev::IoLoop* vods_server_;
   common::libev::IoLoopObserver* vods_handler_;
-  // cods (channels on demand)
+  // cods (channel on demand)
   common::libev::IoLoop* cods_server_;
   common::libev::IoLoopObserver* cods_handler_;
   // subscribers
