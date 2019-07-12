@@ -66,9 +66,12 @@ TEST(Job, Status) {
   FakeObserver cl;
   iptv_cloud::stream::streams_init(0, NULL);
   iptv_cloud::StreamStruct st(iptv_cloud::StreamInfo{"screen", iptv_cloud::SCREEN, {}, {0}});
-  iptv_cloud::stream::IBaseStream* job = new iptv_cloud::stream::streams::ScreenStream(nullptr, &cl, &st);
+  iptv_cloud::stream::Config bconf(iptv_cloud::SCREEN, 10, {iptv_cloud::InputUri(0, common::uri::Url(SCREEN_URL))},
+                                   {iptv_cloud::OutputUri(0, common::uri::Url(TEST_URL))});
+  iptv_cloud::stream::streams::AudioVideoConfig conf(bconf);
+  iptv_cloud::stream::IBaseStream* job = new iptv_cloud::stream::streams::ScreenStream(&conf, &cl, &st);
   std::thread th(&quit_job, job);
-  EXPECT_CALL(cl, OnStatusChanged(job, _)).Times(4);
+  EXPECT_CALL(cl, OnStatusChanged(job, _)).Times(5);
   EXPECT_CALL(cl, OnTimeoutUpdated(job)).Times(::testing::AnyNumber());
   EXPECT_CALL(cl, OnSyncMessageReceived(job, _)).Times(::testing::AnyNumber());
   EXPECT_CALL(cl, OnProbeEvent(job, _, _)).Times(::testing::AnyNumber());
