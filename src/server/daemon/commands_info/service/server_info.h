@@ -49,16 +49,16 @@ class ServerInfo : public common::serializer::JsonSerializer<ServerInfo> {
  public:
   typedef JsonSerializer<ServerInfo> base_class;
   ServerInfo();
-  explicit ServerInfo(int cpu_load,
-                      int gpu_load,
-                      const std::string& uptime,
-                      const utils::MemoryShot& mem_shot,
-                      const utils::HddShot& hdd_shot,
-                      fastotv::bandwidth_t net_bytes_recv,
-                      fastotv::bandwidth_t net_bytes_send,
-                      const utils::SysinfoShot& sys,
-                      fastotv::timestamp_t timestamp,
-                      const OnlineUsers& online_users);
+  ServerInfo(int cpu_load,
+             int gpu_load,
+             const std::string& uptime,
+             const utils::MemoryShot& mem_shot,
+             const utils::HddShot& hdd_shot,
+             fastotv::bandwidth_t net_bytes_recv,
+             fastotv::bandwidth_t net_bytes_send,
+             const utils::SysinfoShot& sys,
+             fastotv::timestamp_t timestamp,
+             const OnlineUsers& online_users);
 
   int GetCpuLoad() const;
   int GetGpuLoad() const;
