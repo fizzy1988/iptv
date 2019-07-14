@@ -52,9 +52,9 @@ class BuildRequest(build_utils.BuildRequest):
         if platform_name == 'linux':
             distribution = system_info.linux_get_dist()
             if distribution == 'DEBIAN':
-                dep_libs = ['gcc', 'g++', 'git', 'make', 'autoconf', 'libtool', 'pkg-config', 'gettext',
+                dep_libs = ['gcc', 'g++', 'git', 'make', 'autoconf', 'libtool', 'pkg-config', 'gettext', 'cmake',
                             'libcairo2-dev', 'libssl-dev', 'libblkid-dev',
-                            'libmount-dev', 'libdrm-dev', 'libsoup2.4-dev', 'libudev-dev', 'libjpeg-dev',
+                            'libmount-dev', 'libdrm-dev', 'libsoup2.4-dev', 'libudev-dev', 'libjpeg-dev', 'cmake',
                             # 'freeglut3-dev',
                             # 'libegl1-mesa-dev',
                             'zlib1g-dev', 'libffi-dev', 'yasm', 'nasm', 'bison', 'flex', 'libxrandr-dev',
@@ -132,7 +132,7 @@ class BuildRequest(build_utils.BuildRequest):
 if __name__ == "__main__":
     # openssl_default_version = '1.1.1b'
     glib_default_version = '2.60.2'
-    cmake_default_version = '3.4.0'
+    # cmake_default_version = '3.4.0'
     meson_default_version = '0.50.1'
     gstreamer_default_version = '1.16.0'
     gst_plugins_base_default_version = gstreamer_default_version
@@ -153,13 +153,13 @@ if __name__ == "__main__":
                             action='store_false', default=False)
 
     # cmake
-    cmake_grp = parser.add_mutually_exclusive_group()
-    cmake_grp.add_argument('--with-cmake', help='build cmake (default, version:{0})'.format(meson_default_version),
-                           dest='with_cmake', action='store_true', default=True)
-    cmake_grp.add_argument('--without-cmake', help='build without cmake', dest='with_cmake', action='store_false',
-                           default=False)
-    parser.add_argument('--cmake-version', help='cmake version (default: {0})'.format(cmake_default_version),
-                        default=cmake_default_version)
+    # cmake_grp = parser.add_mutually_exclusive_group()
+    # cmake_grp.add_argument('--with-cmake', help='build cmake (default, version:{0})'.format(meson_default_version),
+    #                       dest='with_cmake', action='store_true', default=True)
+    # cmake_grp.add_argument('--without-cmake', help='build without cmake', dest='with_cmake', action='store_false',
+    #                       default=False)
+    # parser.add_argument('--cmake-version', help='cmake version (default: {0})'.format(cmake_default_version),
+    #                    default=cmake_default_version)
 
     # meson
     meson_grp = parser.add_mutually_exclusive_group()
@@ -334,8 +334,8 @@ if __name__ == "__main__":
     if argv.with_system:
         request.install_system()
 
-    if argv.with_cmake:
-        request.build_cmake(argv.cmake_version)
+    # if argv.with_cmake:
+    #    request.build_cmake(argv.cmake_version)
 
     if argv.with_meson:
         request.build_meson(argv.meson_version)
