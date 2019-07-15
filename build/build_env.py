@@ -7,6 +7,8 @@ from check_plugins import check_plugins
 
 # Script for building environment on clean machine
 
+# faac: https://sourceforge.net/projects/faac/files/faac-src/faac-1.29/faac-1.29.9.2.tar.gz
+
 GLIB_SRC_ROOT = "http://ftp.acc.umu.se/pub/gnome/sources/glib"
 GLIB_ARCH_COMP = "xz"
 GLIB_ARCH_EXT = "tar." + GLIB_ARCH_COMP
