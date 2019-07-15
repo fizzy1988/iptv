@@ -40,7 +40,9 @@ Connector DeviceStreamBuilder::BuildInput() {
   common::uri::Upath dpath = duri.GetPath();
   elements::Element* video = nullptr;
   if (config->HaveVideo()) {
-    video = elements::sources::make_v4l2_src(dpath.GetPath(), 0);
+    elements::sources::ElementV4L2Src* v4l = elements::sources::make_v4l2_src(dpath.GetPath(), 0);
+    v4l->SetProperty("do-timestamp", true);
+    video = v4l;
     ElementAdd(video);
     pad::Pad* src_pad = video->StaticPad("src");
     if (src_pad->IsValid()) {
@@ -48,7 +50,7 @@ Connector DeviceStreamBuilder::BuildInput() {
     }
     delete src_pad;
 
-    elements::ElementCapsFilter* capsfilter =
+    /*elements::ElementCapsFilter* capsfilter =
         new elements::ElementCapsFilter(common::MemSPrintf(VIDEO_CAPS_DEVICE_NAME_1U, 0));
     ElementAdd(capsfilter);
 
@@ -58,7 +60,13 @@ Connector DeviceStreamBuilder::BuildInput() {
     gst_caps_unref(cap_width_height);
 
     ElementLink(video, capsfilter);
-    video = capsfilter;
+    video = capsfilter;*/
+
+    elements::ElementDecodebin* decodebin = new elements::ElementDecodebin(common::MemSPrintf(DECODEBIN_NAME_1U, 0));
+    ElementAdd(decodebin);
+    ElementLink(video, decodebin);
+    HandleDecodebinCreated(decodebin);
+    video = decodebin;
   }
 
   elements::Element* audio = nullptr;
@@ -70,8 +78,14 @@ Connector DeviceStreamBuilder::BuildInput() {
       HandleInputSrcPadCreated(duri.GetScheme(), src_pad, 1);
     }
     delete src_pad;
+
+    elements::ElementDecodebin* decodebin = new elements::ElementDecodebin(common::MemSPrintf(DECODEBIN_NAME_1U, 1));
+    ElementAdd(decodebin);
+    ElementLink(audio, decodebin);
+    HandleDecodebinCreated(decodebin);
+    audio = decodebin;
   }
-  return {video, audio};
+  return {nullptr, nullptr};
 }
 
 }  // namespace builders
