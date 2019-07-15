@@ -21,8 +21,12 @@
 #define RTMP_INPUT "rtmp://4.31.30.153:1935/devapp/tokengenffmpeg1"
 #define FILE_INPUT "file:///home/sasha/2.txt"
 #define DEVICE_VIDEO "/dev/video3"
-#define DEVICE_AUDIO "audio=hw:3,0"
-#define DEVICE_INPUT "dev://" DEVICE_VIDEO "?" DEVICE_AUDIO
+#define HW_30 "hw:3,0"
+#define DEVICE_AUDIO "audio=" HW_30
+#define PURPLE "purple"
+#define COLOR "color=" PURPLE
+#define QUERY DEVICE_AUDIO "&" COLOR
+#define DEVICE_INPUT "dev://" DEVICE_VIDEO "?" QUERY
 
 TEST(InputUri, ConvertFromString) {
   const std::string invalid_uri_json = "{ \"id\": 0, \"uri\": \"\", \"user_agent\": 0 }";
@@ -59,6 +63,8 @@ TEST(InputUri, ConvertFromString) {
   ASSERT_TRUE(dev_ro.GetScheme() == common::uri::Url::dev);
   common::uri::Upath dpath = dev_ro.GetPath();
   ASSERT_EQ(dpath.GetPath(), DEVICE_VIDEO);
-  ASSERT_EQ(dpath.GetQuery(), DEVICE_AUDIO);
+  ASSERT_EQ(dpath.GetQuery(), QUERY);
+  auto params = dpath.GetQueryParams();
+  ASSERT_EQ(params.size(), 2);
   ASSERT_EQ(dev_uri.GetUserAgent(), iptv_cloud::InputUri::WINK);
 }

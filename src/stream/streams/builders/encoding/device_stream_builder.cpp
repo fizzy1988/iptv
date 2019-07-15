@@ -14,6 +14,8 @@
 
 #include "stream/streams/builders/encoding/device_stream_builder.h"
 
+#include <string>
+
 #include <common/sprintf.h>
 
 #include "base/input_uri.h"  // for InputUri
@@ -71,7 +73,18 @@ Connector DeviceStreamBuilder::BuildInput() {
 
   elements::Element* audio = nullptr;
   if (config->HaveAudio()) {
-    audio = elements::sources::make_alsa_src(dpath.GetQuery(), 1);
+    const auto params = dpath.GetQueryParams();
+    std::string audio_device;
+    for (auto param : params) {
+      if (common::EqualsASCII(param.key, "audio", false)) {
+        audio_device = param.value;
+      }
+    }
+    if (audio_device.empty()) {
+      NOTREACHED() << "Invalid audio input.";
+    }
+
+    audio = elements::sources::make_alsa_src(audio_device, 1);
     ElementAdd(audio);
     pad::Pad* src_pad = audio->StaticPad("src");
     if (src_pad->IsValid()) {
