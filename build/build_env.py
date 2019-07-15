@@ -58,7 +58,7 @@ class BuildRequest(build_utils.BuildRequest):
                             # 'freeglut3-dev',
                             # 'libegl1-mesa-dev',
                             'zlib1g-dev', 'libffi-dev', 'yasm', 'nasm', 'bison', 'flex', 'libxrandr-dev',
-                            'libfaac-dev', 'libfaad-dev', 'libgdk-pixbuf2.0-dev',
+                            'libfaac-dev', 'libfaad-dev', 'libgdk-pixbuf2.0-dev', 'libasound2-dev',
                             'ninja-build', 'intltool', 'liborc-0.4-dev', 'libxml2-dev', 'libx264-dev',
                             'libmp3lame-dev', 'librtmp-dev', 'libproxy-dev']
             elif distribution == 'RHEL':
