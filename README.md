@@ -9,7 +9,7 @@ Free IPTV/Video cloud server
 * Playlists
 * Mozaic
 * Many Outputs
-* Physical Inputs
+* Physical Inputs (IP Camera)
 * Streaming Protocols
 * File Formats
 * Presets
